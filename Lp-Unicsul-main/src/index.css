@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Manrope", sans-serif;
+
+  --color-background: #001135;
+  --color-primary: #b8c3ff;
+  --color-on-primary: #002387;
+  --color-secondary: #cdbdff;
+  --color-tertiary: #c8ce33;
+  --color-cta-yellow: #f8fe60;
+  --color-aqua: #01ecd0;
+  
+  --color-surface-container: #0b1e44;
+  --color-surface-container-low: #061a40;
+  --color-surface-container-high: #17294f;
+  --color-surface-container-highest: #23345a;
+  --color-on-surface: #d9e2ff;
+  --color-on-surface-variant: #c5c6cf;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-body selection:bg-tertiary/30;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-[#12244A]/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+  }
+  
+  .glass-light {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  }
+  
+  .cta-glow {
+    box-shadow: 0 0 20px rgba(248, 254, 96, 0.3);
+  }
+  
+  .cta-glow:hover {
+    box-shadow: 0 0 30px rgba(248, 254, 96, 0.5);
+  }
+
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-aqua;
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-150%) rotate(45deg); }
+  100% { transform: translateX(150%) rotate(45deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px rgba(248, 254, 96, 0.4)); }
+  50% { opacity: 0.8; filter: drop-shadow(0 0 15px rgba(248, 254, 96, 0.8)); }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s infinite;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
