@@ -54,31 +54,77 @@ interface Course {
 
 // --- Icon mapping by title keyword ---
 
-function getCourseIcon(title: string, grau: string): { icon: React.ElementType; iconBg: string; iconColor: string } {
+function getCourseIcon(title: string, category: string): { icon: React.ElementType; iconBg: string; iconColor: string } {
   const t = title.toLowerCase();
-  if (t.includes('administração 2.0')) return { icon: Zap, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-500' };
-  if (t.includes('administração')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
-  if (t.includes('agro')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
-  if (t.includes('arquitetura')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
-  if (t.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
-  if (t.includes('computação') || t.includes('sistemas de informação')) return { icon: Terminal, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
-  if (t.includes('contábeis') || t.includes('contab')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
-  if (t.includes('direito')) return { icon: Scale, iconBg: 'bg-slate-500/10', iconColor: 'text-slate-500' };
+
+  // Tecnologia & Computação
+  if (t.includes('cibersegurança') || t.includes('segurança da informação')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
+  if (t.includes('inteligência artificial')) return { icon: Brain, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
+  if (t.includes('ciência de dados') || t.includes('análise de dados') || t.includes('banco de dados')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
+  if (t.includes('desenvolvimento') || t.includes('coding') || t.includes('full stack') || t.includes('back-end') || t.includes('mobile')) return { icon: Code2, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+  if (t.includes('computação') || t.includes('sistemas de informação') || t.includes('sistemas para internet') || t.includes('redes de computadores')) return { icon: Terminal, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+  if (t.includes('jogos digitais')) return { icon: Code2, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
+  if (t.includes('internet das coisas') || t.includes('computação em nuvem')) return { icon: Terminal, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
+  if (t.includes('tecnologia da informação')) return { icon: Terminal, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (t.includes('engenharia de software')) return { icon: Code2, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+
+  // Saúde
+  if (t.includes('biomedicina') || t.includes('medicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
   if (t.includes('enfermagem')) return { icon: Heart, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
+  if (t.includes('farmácia') || t.includes('farmacia')) return { icon: Stethoscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
+  if (t.includes('fisioterapia') || t.includes('terapia ocupacional')) return { icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+  if (t.includes('nutrição') || t.includes('gastronomia')) return { icon: Apple, iconBg: 'bg-lime-500/10', iconColor: 'text-lime-500' };
+  if (t.includes('fonoaudiologia')) return { icon: Stethoscope, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
+  if (t.includes('educação física')) return { icon: Activity, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+  if (t.includes('estética') || t.includes('podologia') || t.includes('naturologia') || t.includes('terapias integrativas')) return { icon: Heart, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
+  if (t.includes('radiologia') || t.includes('óptica') || t.includes('optometria')) return { icon: Microscope, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-500' };
+  if (t.includes('gerontologia') || t.includes('gestão hospitalar') || t.includes('saúde pública')) return { icon: Stethoscope, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
+  if (t.includes('psicopedagogia') || t.includes('psicanalíticos')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
+
+  // Engenharia & Arquitetura
+  if (t.includes('arquitetura')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
   if (t.includes('engenharia civil')) return { icon: Building2, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-500' };
   if (t.includes('engenharia')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
-  if (t.includes('farmácia') || t.includes('farmacia')) return { icon: Stethoscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
-  if (t.includes('fisioterapia')) return { icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
-  if (t.includes('nutrição') || t.includes('nutri')) return { icon: Apple, iconBg: 'bg-lime-500/10', iconColor: 'text-lime-500' };
-  if (t.includes('pedagogia')) return { icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
-  if (t.includes('psicologia')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
-  if (t.includes('análise') || t.includes('analise') || t.includes('desenv')) return { icon: Terminal, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+
+  // Negócios & Gestão
+  if (t.includes('administração')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (t.includes('contábeis')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
+  if (t.includes('econômica')) return { icon: BarChart3, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
   if (t.includes('marketing')) return { icon: Megaphone, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
-  if (t.includes('recursos humanos') || t.includes('gestão de rh') || t.includes('rh')) return { icon: Users, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
-  if (t.includes('cibersegurança') || t.includes('segurança')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
-  if (t.includes('medicina')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
-  if (grau.toLowerCase().includes('licenciatura')) return { icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
-  if (grau.toLowerCase().includes('tecnólogo') || grau.toLowerCase().includes('tecnologo')) return { icon: Code2, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
+  if (t.includes('recursos humanos')) return { icon: Users, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (t.includes('logística') || t.includes('processos gerenciais') || t.includes('gestão comercial') || t.includes('gestão financeira')) return { icon: Briefcase, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
+  if (t.includes('empreendedorismo') || t.includes('coaching')) return { icon: Zap, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-500' };
+  if (t.includes('comércio exterior') || t.includes('negócios imobiliários') || t.includes('cooperativas') || t.includes('terceiro setor')) return { icon: Briefcase, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
+  if (t.includes('gestão pública') || t.includes('segurança pública') || t.includes('segurança privada') || t.includes('segurança no')) return { icon: Shield, iconBg: 'bg-slate-500/10', iconColor: 'text-slate-500' };
+  if (t.includes('gestão d') || t.includes('gestão do')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (t.includes('influenciador digital')) return { icon: Megaphone, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
+  if (t.includes('publicidade') || t.includes('relações públicas') || t.includes('produção midiática') || t.includes('produção audiovisual') || t.includes('produção cultural')) return { icon: Megaphone, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+  if (t.includes('jornalismo')) return { icon: Megaphone, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+
+  // Educação & Licenciatura
+  if (t.includes('pedagogia') || t.includes('pedagógica') || t.includes('educação especial')) return { icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
+  if (t.includes('letras')) return { icon: BookOpen, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+
+  // Agrárias
+  if (t.includes('agro') || t.includes('zootecnia')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
+
+  // Direito & Jurídico
+  if (t.includes('direito') || t.includes('jurídic') || t.includes('conciliação') || t.includes('mediação') || t.includes('criminologia') || t.includes('serviços penais') || t.includes('perícia')) return { icon: Scale, iconBg: 'bg-slate-500/10', iconColor: 'text-slate-500' };
+  if (t.includes('ciência política') || t.includes('relações internacionais') || t.includes('serviço social')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+
+  // Humanas / Ciências
+  if (t.includes('filosofia') || t.includes('teologia') || t.includes('humanidades')) return { icon: BookOpen, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+  if (t.includes('história') || t.includes('geografia') || t.includes('ciências sociais')) return { icon: BookOpen, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+  if (t.includes('biológicas')) return { icon: Microscope, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
+  if (t.includes('física') || t.includes('química') || t.includes('matemática')) return { icon: Microscope, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+
+  // Design
+  if (t.includes('design') || t.includes('artes visuais') || t.includes('fotografia')) return { icon: Sparkles, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
+  if (t.includes('eventos') || t.includes('turismo') || t.includes('desportiva') || t.includes('lazer') || t.includes('secretariado')) return { icon: Users, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
+
+  // Fallback por categoria
+  if (category.toLowerCase().includes('licenciatura')) return { icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
+  if (category.toLowerCase().includes('tecnólogo') || category.toLowerCase().includes('tecnologo')) return { icon: Code2, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
   return { icon: GraduationCap, iconBg: 'bg-primary/10', iconColor: 'text-primary' };
 }
 
