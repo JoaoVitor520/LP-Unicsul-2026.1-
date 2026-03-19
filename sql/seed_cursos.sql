@@ -1,0 +1,187 @@
+-- Adicionar coluna de área de atuação
+ALTER TABLE public.cursos ADD COLUMN IF NOT EXISTS area TEXT;
+
+-- Permitir leitura da nova coluna
+GRANT SELECT ON public.cursos TO anon;
+GRANT SELECT ON public.cursos TO authenticated;
+
+-- Limpar tabela e reiniciar IDs
+TRUNCATE public.cursos RESTART IDENTITY;
+
+-- =============================================
+-- CURSOS DIGITAIS
+-- =============================================
+INSERT INTO public.cursos (title, modality, category, area, duration) VALUES
+-- Bacharelado Digital
+('Administração', 'Digital', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Administração Pública', 'Digital', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Ciência da Computação', 'Digital', 'Bacharelado', 'Tecnologia', '8 semestres'),
+('Ciência Política', 'Digital', 'Bacharelado', 'Social', '6 semestres'),
+('Ciências Contábeis', 'Digital', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Ciências Econômicas', 'Digital', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Engenharia de Software', 'Digital', 'Bacharelado', 'Engenharias', '8 semestres'),
+('Estudos Teóricos Psicanalíticos e Sociais', 'Digital', 'Bacharelado', 'Saúde', '8 semestres'),
+('Filosofia', 'Digital', 'Bacharelado', 'Educação', '6 semestres'),
+('Geografia', 'Digital', 'Bacharelado', 'Educação', '6 semestres'),
+('História', 'Digital', 'Bacharelado', 'Educação', '6 semestres'),
+('Interdisciplinar em Humanidades', 'Digital', 'Bacharelado', 'Educação', '6 semestres'),
+('Jornalismo', 'Digital', 'Bacharelado', 'Comunicação', '8 semestres'),
+('Publicidade e Propaganda', 'Digital', 'Bacharelado', 'Comunicação', '8 semestres'),
+('Relações Internacionais', 'Digital', 'Bacharelado', 'Gestão e Negócios', '6 semestres'),
+('Relações Públicas', 'Digital', 'Bacharelado', 'Comunicação', '8 semestres'),
+('Sistemas de Informação', 'Digital', 'Bacharelado', 'Tecnologia', '8 semestres'),
+('Teologia', 'Digital', 'Bacharelado', 'Educação', '6 semestres'),
+
+-- Bacharelado 2.0 Digital
+('Administração 2.0', 'Digital', 'Bacharelado 2.0', 'Gestão e Negócios', '4 semestres'),
+('Ciências Contábeis 2.0', 'Digital', 'Bacharelado 2.0', 'Gestão e Negócios', '2 semestres'),
+('Ciências Econômicas 2.0', 'Digital', 'Bacharelado 2.0', 'Gestão e Negócios', '4 semestres'),
+
+-- Tecnólogo Digital
+('CST em Análise de Dados de Alta Performance', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Análise e Desenvolvimento de Sistemas', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Banco de Dados', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Cibersegurança', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Ciência de Dados', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Coaching e Mentoring', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Coding', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Comércio Exterior', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Computação em Nuvem', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Conciliação, Mediação e Arbitragem', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Criminologia', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Desenvolvimento Back-End', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Desenvolvimento Full Stack', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Desenvolvimento Mobile', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Design de Animação', 'Digital', 'Tecnólogo', 'Comunicação', '4 semestres'),
+('CST em Design de Experiência', 'Digital', 'Tecnólogo', 'Comunicação', '4 semestres'),
+('CST em Design de Interiores', 'Digital', 'Tecnólogo', 'Design', '4 semestres'),
+('CST em Design de Moda', 'Digital', 'Tecnólogo', 'Design', '4 semestres'),
+('CST em Design de Produto', 'Digital', 'Tecnólogo', 'Design', '4 semestres'),
+('CST em Design Gráfico', 'Digital', 'Tecnólogo', 'Design', '4 semestres'),
+('CST em Empreendedorismo', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Eventos', 'Digital', 'Tecnólogo', 'Gastronomia e Hospitalidade', '4 semestres'),
+('CST em Fotografia', 'Digital', 'Tecnólogo', 'Gastronomia e Hospitalidade', '4 semestres'),
+('CST em Gastronomia', 'Digital', 'Tecnólogo', 'Gastronomia e Hospitalidade', '4 semestres'),
+('CST em Gestão Comercial', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão da Produção Industrial', 'Digital', 'Tecnólogo', 'Engenharias', '6 semestres'),
+('CST em Gestão da Qualidade', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão da Saúde Pública', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '6 semestres'),
+('CST em Gestão da Tecnologia da Informação', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Gestão das Organizações do Terceiro Setor', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão de Cooperativas', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão de Negócios Imobiliários', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão de Recursos Humanos', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão de Segurança Privada', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão de Turismo', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão Desportiva e de Lazer', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão do Agronegócio', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '6 semestres'),
+('CST em Gestão Financeira', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão Pública', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Influenciador Digital', 'Digital', 'Tecnólogo', 'Comunicação', '4 semestres'),
+('CST em Inteligência Artificial', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Internet das Coisas', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Jogos Digitais', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Logística', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Marketing', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Marketing Digital', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Perícia Judicial e Extrajudicial', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Processos Gerenciais', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Produção Audiovisual', 'Digital', 'Tecnólogo', 'Comunicação', '4 semestres'),
+('CST em Produção Cultural', 'Digital', 'Tecnólogo', 'Comunicação', '6 semestres'),
+('CST em Produção Midiática', 'Digital', 'Tecnólogo', 'Comunicação', '4 semestres'),
+('CST em Redes de Computadores', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Secretariado', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Segurança da Informação', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Segurança no Trabalho', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '6 semestres'),
+('CST em Segurança no Trânsito', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Segurança Pública', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Serviços Jurídicos e Notariais', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Serviços Penais', 'Digital', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Sistemas para Internet', 'Digital', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+
+-- =============================================
+-- CURSOS SEMIPRESENCIAIS
+-- =============================================
+
+-- Bacharelado Semipresencial
+('Administração', 'Semipresencial', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Agronomia', 'Semipresencial', 'Bacharelado', 'Gestão e Negócios', '10 semestres'),
+('Arquitetura e Urbanismo', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Biomedicina', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Ciência da Computação', 'Semipresencial', 'Bacharelado', 'Tecnologia', '8 semestres'),
+('Ciências Biológicas', 'Semipresencial', 'Bacharelado', 'Educação', '8 semestres'),
+('Ciências Contábeis', 'Semipresencial', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Educação Física', 'Semipresencial', 'Bacharelado', 'Educação', '8 semestres'),
+('Engenharia Ambiental', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Engenharia Civil', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Engenharia de Computação', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Engenharia de Produção', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Engenharia Elétrica', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Engenharia Mecânica', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Engenharia Mecatrônica', 'Semipresencial', 'Bacharelado', 'Engenharias', '10 semestres'),
+('Farmácia', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Física', 'Semipresencial', 'Bacharelado', 'Educação', '6 semestres'),
+('Fisioterapia', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Fonoaudiologia', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Matemática', 'Semipresencial', 'Bacharelado', 'Educação', '6 semestres'),
+('Naturologia', 'Semipresencial', 'Bacharelado', 'Saúde', '6 semestres'),
+('Nutrição', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Óptica e Optometria', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Psicopedagogia', 'Semipresencial', 'Bacharelado', 'Saúde', '6 semestres'),
+('Química', 'Semipresencial', 'Bacharelado', 'Educação', '6 semestres'),
+('Serviço Social', 'Semipresencial', 'Bacharelado', 'Gestão e Negócios', '8 semestres'),
+('Terapia Ocupacional', 'Semipresencial', 'Bacharelado', 'Saúde', '8 semestres'),
+('Zootecnia', 'Semipresencial', 'Bacharelado', 'Saúde', '10 semestres'),
+
+-- Bacharelado 2.0 Semipresencial
+('Educação Física 2.0', 'Semipresencial', 'Bacharelado 2.0', 'Educação', '4 semestres'),
+('Engenharia Ambiental 2.0', 'Semipresencial', 'Bacharelado 2.0', 'Engenharias', '6 semestres'),
+('Engenharia de Produção 2.0', 'Semipresencial', 'Bacharelado 2.0', 'Engenharias', '10 semestres'),
+
+-- Licenciatura Semipresencial
+('Artes Visuais', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Ciências Biológicas', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Ciências Sociais', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Educação Especial', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Educação Física', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Filosofia', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Física', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Geografia', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('História', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Letras - Libras', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Letras - Português e Espanhol', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Letras - Português e Inglês', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Letras - Português e Japonês', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Matemática', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Pedagogia', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Química', 'Semipresencial', 'Licenciatura', 'Educação', '8 semestres'),
+('Formação Pedagógica - Biologia', 'Semipresencial', 'Licenciatura', 'Educação', '2 semestres'),
+('Formação Pedagógica - História', 'Semipresencial', 'Licenciatura', 'Educação', '2 semestres'),
+('Formação Pedagógica - Filosofia', 'Semipresencial', 'Licenciatura', 'Educação', '2 semestres'),
+('Formação Pedagógica - Geografia', 'Semipresencial', 'Licenciatura', 'Educação', '2 semestres'),
+('Formação Pedagógica - Letras Port. e Ing.', 'Semipresencial', 'Licenciatura', 'Educação', '2 semestres'),
+
+-- Licenciatura 2.0 Semipresencial
+('Ciências Biológicas - Licenciados', 'Semipresencial', 'Licenciatura 2.0', 'Educação', '2 semestres'),
+('História - Licenciados', 'Semipresencial', 'Licenciatura 2.0', 'Educação', '2 semestres'),
+('Ciências Sociais - Licenciados', 'Semipresencial', 'Licenciatura 2.0', 'Educação', '2 semestres'),
+('Filosofia - Licenciados', 'Semipresencial', 'Licenciatura 2.0', 'Educação', '2 semestres'),
+('Geografia - Licenciados', 'Semipresencial', 'Licenciatura 2.0', 'Educação', '2 semestres'),
+('Letras Português e Inglês - Licenciados', 'Semipresencial', 'Licenciatura 2.0', 'Educação', '2 semestres'),
+
+-- Bach/Licen Semipresencial
+('Educação Física (Área Básica de Ingresso)', 'Semipresencial', 'Bach/Licen', 'Educação', '8 semestres'),
+
+-- Tecnólogo Semipresencial
+('CST em Análise e Desenvolvimento de Sistemas', 'Semipresencial', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Design de Moda', 'Semipresencial', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Design Gráfico', 'Semipresencial', 'Tecnólogo', 'Design e Moda', '4 semestres'),
+('CST em Estética e Cosmética', 'Semipresencial', 'Tecnólogo', 'Saúde', '4 semestres'),
+('CST em Gerontologia', 'Semipresencial', 'Tecnólogo', 'Saúde', '6 semestres'),
+('CST em Gestão Ambiental', 'Semipresencial', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Gestão de Recursos Humanos', 'Semipresencial', 'Tecnólogo', 'Tecnologia', '4 semestres'),
+('CST em Gestão Hospitalar', 'Semipresencial', 'Tecnólogo', 'Gestão e Negócios', '6 semestres'),
+('CST em Logística', 'Semipresencial', 'Tecnólogo', 'Gestão e Negócios', '4 semestres'),
+('CST em Podologia', 'Semipresencial', 'Tecnólogo', 'Saúde', '4 semestres'),
+('CST em Radiologia', 'Semipresencial', 'Tecnólogo', 'Saúde', '6 semestres'),
+('CST em Terapias Integrativas e Complementares', 'Semipresencial', 'Tecnólogo', 'Saúde', '4 semestres');
