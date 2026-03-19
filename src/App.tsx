@@ -916,12 +916,6 @@ export default function App() {
             <CSVLogo />
           </a>
           
-          <div className="flex flex-wrap justify-center gap-8 font-headline text-xs font-bold uppercase tracking-widest text-[#121c43]/60">
-            <a href="#" className="hover:text-[#2a68ff] transition-colors">Privacidade</a>
-            <a href="#" className="hover:text-[#2a68ff] transition-colors">Termos</a>
-            <a href="#" className="hover:text-[#2a68ff] transition-colors">Regulamento</a>
-            <a href="#" className="hover:text-[#2a68ff] transition-colors">Contato</a>
-          </div>
           
           <div className="text-[10px] text-[#121c43]/40 uppercase tracking-widest text-center md:text-right font-bold">
             © 2026 Cruzeiro do Sul Virtual. <br className="md:hidden"/> Todos os direitos reservados.
