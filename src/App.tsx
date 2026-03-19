@@ -3,24 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Search, 
-  Terminal, 
-  Shield, 
-  Landmark, 
-  Cpu, 
-  Stethoscope, 
-  Palette, 
-  Users, 
-  GraduationCap, 
-  ArrowRight, 
-  CheckCircle, 
-  ChevronDown, 
-  Clock, 
-  Award, 
-  Smartphone, 
+import {
+  Search,
+  Terminal,
+  Shield,
+  Stethoscope,
+  Users,
+  GraduationCap,
+  ArrowRight,
+  CheckCircle,
+  ChevronDown,
+  Clock,
+  Award,
+  Smartphone,
   Briefcase,
   Sparkles,
   Menu,
@@ -37,8 +34,10 @@ import {
   Brain,
   Code2,
   Megaphone,
-  BarChart3
+  BarChart3,
+  Loader2
 } from 'lucide-react';
+import { supabase } from './lib/supabase';
 
 // --- Types ---
 
@@ -46,37 +45,41 @@ interface Course {
   id: number;
   title: string;
   category: string;
-  duration: string;
   modality: 'Digital' | 'Semipresencial';
   icon: React.ElementType;
   iconBg: string;
   iconColor: string;
 }
 
-// --- Constants ---
+// --- Icon mapping by title keyword ---
 
-const COURSES: Course[] = [
-  { id: 1, title: 'Administração', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' },
-  { id: 2, title: 'Administração 2.0', category: 'Bacharelado 2.0', duration: '4 anos', modality: 'Digital', icon: Zap, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-500' },
-  { id: 3, title: 'Agronomia', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' },
-  { id: 4, title: 'Arquitetura e Urbanismo', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' },
-  { id: 5, title: 'Biomedicina', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' },
-  { id: 6, title: 'Ciência da Computação', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: Terminal, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' },
-  { id: 7, title: 'Ciências Contábeis', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' },
-  { id: 8, title: 'Direito', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Scale, iconBg: 'bg-slate-500/10', iconColor: 'text-slate-500' },
-  { id: 9, title: 'Enfermagem', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Heart, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' },
-  { id: 10, title: 'Engenharia Civil', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Building2, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-500' },
-  { id: 11, title: 'Farmácia', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Stethoscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' },
-  { id: 12, title: 'Fisioterapia', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' },
-  { id: 13, title: 'Nutrição', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Apple, iconBg: 'bg-lime-500/10', iconColor: 'text-lime-500' },
-  { id: 14, title: 'Pedagogia', category: 'Licenciatura', duration: '4 anos', modality: 'Digital', icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' },
-  { id: 15, title: 'Psicologia', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' },
-  { id: 16, title: 'Sistemas de Informação', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: Code2, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' },
-  { id: 17, title: 'Análise e Desenv. de Sistemas', category: 'Tecnólogo', duration: '2.5 anos', modality: 'Digital', icon: Terminal, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' },
-  { id: 18, title: 'Marketing Digital', category: 'Tecnólogo', duration: '2 anos', modality: 'Digital', icon: Megaphone, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' },
-  { id: 19, title: 'Gestão de RH', category: 'Tecnólogo', duration: '2 anos', modality: 'Digital', icon: Users, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' },
-  { id: 20, title: 'Cibersegurança', category: 'Tecnólogo', duration: '2.5 anos', modality: 'Digital', icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' },
-];
+function getCourseIcon(title: string, grau: string): { icon: React.ElementType; iconBg: string; iconColor: string } {
+  const t = title.toLowerCase();
+  if (t.includes('administração 2.0')) return { icon: Zap, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-500' };
+  if (t.includes('administração')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (t.includes('agro')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
+  if (t.includes('arquitetura')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+  if (t.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
+  if (t.includes('computação') || t.includes('sistemas de informação')) return { icon: Terminal, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+  if (t.includes('contábeis') || t.includes('contab')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
+  if (t.includes('direito')) return { icon: Scale, iconBg: 'bg-slate-500/10', iconColor: 'text-slate-500' };
+  if (t.includes('enfermagem')) return { icon: Heart, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
+  if (t.includes('engenharia civil')) return { icon: Building2, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-500' };
+  if (t.includes('engenharia')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+  if (t.includes('farmácia') || t.includes('farmacia')) return { icon: Stethoscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
+  if (t.includes('fisioterapia')) return { icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+  if (t.includes('nutrição') || t.includes('nutri')) return { icon: Apple, iconBg: 'bg-lime-500/10', iconColor: 'text-lime-500' };
+  if (t.includes('pedagogia')) return { icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
+  if (t.includes('psicologia')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
+  if (t.includes('análise') || t.includes('analise') || t.includes('desenv')) return { icon: Terminal, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+  if (t.includes('marketing')) return { icon: Megaphone, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
+  if (t.includes('recursos humanos') || t.includes('gestão de rh') || t.includes('rh')) return { icon: Users, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (t.includes('cibersegurança') || t.includes('segurança')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
+  if (t.includes('medicina')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+  if (grau.toLowerCase().includes('licenciatura')) return { icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' };
+  if (grau.toLowerCase().includes('tecnólogo') || grau.toLowerCase().includes('tecnologo')) return { icon: Code2, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
+  return { icon: GraduationCap, iconBg: 'bg-primary/10', iconColor: 'text-primary' };
+}
 
 const CATEGORIES = ['Todos', 'Bacharelado', 'Bacharelado 2.0', 'Licenciatura', 'Licenciatura 2.0', 'Tecnólogo'];
 
@@ -244,20 +247,64 @@ const CountdownTimer = () => {
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todos');
-  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState('');
+
+  // Form fields
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [cursoInteresse, setCursoInteresse] = useState('');
+
+  // Courses from Supabase
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      const { data, error } = await supabase
+        .from('cursos')
+        .select('id, title, grau, modalidade')
+        .order('title');
+      if (!error && data) {
+        const mapped: Course[] = data.map((row: { id: number; title: string; grau: string; modalidade: string }) => ({
+          id: row.id,
+          title: row.title,
+          category: row.grau,
+          modality: row.modalidade as 'Digital' | 'Semipresencial',
+          ...getCourseIcon(row.title, row.grau),
+        }));
+        setCourses(mapped);
+      }
+      setLoadingCourses(false);
+    }
+    fetchCourses();
+  }, []);
 
   const filteredCourses = useMemo(() => {
-    return COURSES.filter(course => {
+    return courses.filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = activeCategory === 'Todos' || course.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, activeCategory]);
+  }, [courses, searchQuery, activeCategory]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus('loading');
-    setTimeout(() => setFormStatus('success'), 1500);
+    setFormError('');
+    const { error } = await supabase.from('leads').insert({
+      nome,
+      email,
+      whatsapp,
+      curso: cursoInteresse,
+    });
+    if (error) {
+      setFormError('Erro ao enviar. Tente novamente.');
+      setFormStatus('error');
+    } else {
+      setFormStatus('success');
+    }
   };
 
   return (
@@ -344,18 +391,25 @@ export default function App() {
           </div>
 
           {/* Bento Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredCourses.map(course => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </AnimatePresence>
-          </div>
-          
-          {filteredCourses.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-on-surface-variant text-lg">Nenhum curso encontrado para sua busca.</p>
+          {loadingCourses ? (
+            <div className="flex justify-center items-center py-32">
+              <Loader2 size={48} className="text-primary animate-spin" />
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <AnimatePresence mode="popLayout">
+                  {filteredCourses.map(course => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </AnimatePresence>
+              </div>
+              {filteredCourses.length === 0 && (
+                <div className="text-center py-20">
+                  <p className="text-on-surface-variant text-lg">Nenhum curso encontrado para sua busca.</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
@@ -476,30 +530,36 @@ export default function App() {
               <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">Nome Completo</label>
-                  <input 
+                  <input
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none" 
-                    placeholder="Seu nome aqui" 
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none"
+                    placeholder="Seu nome aqui"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">E-mail</label>
-                    <input 
+                    <input
                       required
                       type="email"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none" 
-                      placeholder="exemplo@email.com" 
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none"
+                      placeholder="exemplo@email.com"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">WhatsApp</label>
-                    <input 
+                    <input
                       required
                       type="tel"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none" 
-                      placeholder="(00) 00000-0000" 
+                      value={whatsapp}
+                      onChange={e => setWhatsapp(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none"
+                      placeholder="(00) 00000-0000"
                     />
                   </div>
                 </div>
@@ -507,49 +567,35 @@ export default function App() {
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">Curso de interesse</label>
                   <div className="relative">
-                    <select 
-                      defaultValue=""
+                    <select
+                      required
+                      value={cursoInteresse}
+                      onChange={e => setCursoInteresse(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface appearance-none cursor-pointer outline-none"
                     >
                       <option className="bg-background" value="" disabled>Escolha um curso...</option>
-                      <optgroup className="bg-background" label="Tecnologia">
-                        <option>Análise e Desenv. de Sistemas</option>
-                        <option>Cibersegurança</option>
-                        <option>Ciência da Computação</option>
-                        <option>Sistemas de Informação</option>
-                      </optgroup>
-                      <optgroup className="bg-background" label="Saúde">
-                        <option>Biomedicina</option>
-                        <option>Enfermagem</option>
-                        <option>Farmácia</option>
-                        <option>Fisioterapia</option>
-                        <option>Nutrição</option>
-                        <option>Psicologia</option>
-                      </optgroup>
-                      <optgroup className="bg-background" label="Negócios & Outros">
-                        <option>Administração</option>
-                        <option>Ciências Contábeis</option>
-                        <option>Direito</option>
-                        <option>Marketing Digital</option>
-                        <option>Pedagogia</option>
-                        <option>Agronomia</option>
-                        <option>Arquitetura e Urbanismo</option>
-                        <option>Engenharia Civil</option>
-                      </optgroup>
+                      {courses.map(c => (
+                        <option key={c.id} className="bg-background" value={c.title}>{c.title}</option>
+                      ))}
                     </select>
                     <ChevronDown size={20} className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-primary/60" />
                   </div>
                 </div>
 
-                <button 
-                  disabled={formStatus !== 'idle'}
+                {formError && (
+                  <p className="text-center text-sm text-red-400">{formError}</p>
+                )}
+
+                <button
+                  disabled={formStatus === 'loading' || formStatus === 'success'}
                   className="w-full bg-cta-yellow text-background py-5 rounded-2xl font-bold text-lg hover:brightness-110 active:scale-[0.98] transition-all cta-glow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {formStatus === 'idle' && 'GARANTIR MINHA CHANCE'}
                   {formStatus === 'loading' && 'PROCESSANDO...'}
                   {formStatus === 'success' && 'INSCRITO COM SUCESSO!'}
+                  {formStatus === 'error' && 'TENTAR NOVAMENTE'}
                 </button>
-                
+
                 <p className="text-center text-[10px] text-white/30 uppercase tracking-widest">
                   Seus dados estão seguros conosco.
                 </p>
