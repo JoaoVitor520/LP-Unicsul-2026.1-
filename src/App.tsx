@@ -316,7 +316,7 @@ export default function App() {
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [showFriendForm, setShowFriendForm] = useState(false);
 
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', indicacao: '', friendName: '', friendPhone: '', friendCourse: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', indicacao: '', nomeIndicacao: '', friendName: '', friendPhone: '', friendCourse: '' });
   const [phoneError, setPhoneError] = useState('');
 
   // Fetch Supabase Data
@@ -432,6 +432,7 @@ export default function App() {
         whatsapp: formData.phone,
         curso: formData.course,
         indicacao: formData.indicacao,
+        nome_indicacao: formData.nomeIndicacao || null,
       }]);
       
       if (error) {
@@ -805,6 +806,21 @@ export default function App() {
                         <ChevronDown size={20} className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#869bea]" />
                       </div>
                     </div>
+
+                    {formData.indicacao === 'Indicação de amigo ou familiar' && (
+                      <div className="space-y-2">
+                        <label htmlFor="nomeIndicacao" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#faff5b] ml-1">Nome ou WhatsApp de quem te indicou</label>
+                        <input
+                          id="nomeIndicacao"
+                          name="nomeIndicacao"
+                          required
+                          value={formData.nomeIndicacao}
+                          onChange={(e) => setFormData({...formData, nomeIndicacao: e.target.value})}
+                          className="w-full bg-[#18234e] border border-[#faff5b]/30 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#faff5b] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner"
+                          placeholder="Ex: Maria Silva ou (11) 99999-9999"
+                        />
+                      </div>
+                    )}
 
                     <div className="space-y-2 pb-2">
                        <label htmlFor="studentCourse" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Curso de interesse</label>
