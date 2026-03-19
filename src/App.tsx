@@ -47,6 +47,7 @@ interface Course {
   category: string;
   duration: string;
   modality: 'Digital' | 'Semipresencial';
+  area: string;
   icon: React.ElementType;
   iconBg: string;
   iconColor: string;
@@ -249,7 +250,8 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
         </div>
         
         <h3 className="font-headline font-bold text-xl mb-2 group-hover:text-primary transition-colors leading-tight">{course.title}</h3>
-        <p className="text-sm text-on-surface-variant/80 mb-8 font-medium">{course.category} • {course.duration}</p>
+        <p className="text-sm text-on-surface-variant/80 mb-1 font-medium">{course.category} • {course.duration}</p>
+        {course.area && <p className="text-xs text-on-surface-variant/50 mb-6 font-medium">{course.area}</p>}
         
         <div className="flex items-center justify-between pt-4 border-t border-white/5">
           <div className="flex flex-col">
@@ -310,15 +312,16 @@ export default function App() {
     async function fetchCourses() {
       const { data, error } = await supabase
         .from('cursos')
-        .select('id, title, category, duration, modality')
+        .select('id, title, category, duration, modality, area')
         .order('title');
       if (!error && data) {
-        const mapped: Course[] = data.map((row: { id: number; title: string; category: string; duration: string; modality: string }) => ({
+        const mapped: Course[] = data.map((row: { id: number; title: string; category: string; duration: string; modality: string; area: string }) => ({
           id: row.id,
           title: row.title,
           category: row.category,
           duration: row.duration ?? '',
           modality: row.modality as 'Digital' | 'Semipresencial',
+          area: row.area ?? '',
           ...getCourseIcon(row.title, row.category),
         }));
         setCourses(mapped);
