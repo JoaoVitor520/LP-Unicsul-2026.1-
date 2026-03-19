@@ -1,9 +1,11 @@
+/// <reference types="vite/client" />
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Search, 
@@ -43,30 +45,26 @@ import {
 // --- Types ---
 
 interface Course {
-  id: number;
+  id: number | string;
   title: string;
   category: string;
   duration: string;
-  modality: 'Digital' | 'Semipresencial';
-  icon: React.ElementType;
-  iconBg: string;
-  iconColor: string;
+  area?: string; // Nova propriedade mapeada na img (ex: Gestão e Negócios)
+  modality: 'Digital' | 'Semipresencial' | string;
+  icon?: React.ElementType; // Usado para fallback
+  iconBg?: string;
+  iconColor?: string;
 }
 
-// --- Constants ---
+// --- Supabase Config ---
+// Nota: O usuário precisa criar o arquivo .env na raiz (ex: .env) com VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+// --- Default Courses (Fallback) ---
 
 const COURSES: Course[] = [
-  { id: 1, title: 'Administração', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' },
-  { id: 2, title: 'Administração 2.0', category: 'Bacharelado 2.0', duration: '4 anos', modality: 'Digital', icon: Zap, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-500' },
-  { id: 3, title: 'Agronomia', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' },
-  { id: 4, title: 'Arquitetura e Urbanismo', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' },
-  { id: 5, title: 'Biomedicina', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' },
-  { id: 6, title: 'Ciência da Computação', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: Terminal, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' },
-  { id: 7, title: 'Ciências Contábeis', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' },
-  { id: 8, title: 'Direito', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Scale, iconBg: 'bg-slate-500/10', iconColor: 'text-slate-500' },
-  { id: 9, title: 'Enfermagem', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Heart, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' },
-  { id: 10, title: 'Engenharia Civil', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Building2, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-500' },
-  { id: 11, title: 'Farmácia', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Stethoscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' },
   { id: 12, title: 'Fisioterapia', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' },
   { id: 13, title: 'Nutrição', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Apple, iconBg: 'bg-lime-500/10', iconColor: 'text-lime-500' },
   { id: 14, title: 'Pedagogia', category: 'Licenciatura', duration: '4 anos', modality: 'Digital', icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' },
@@ -82,49 +80,64 @@ const CATEGORIES = ['Todos', 'Bacharelado', 'Bacharelado 2.0', 'Licenciatura', '
 
 // --- Components ---
 
+const CSVLogo = () => (
+  <img 
+    src="/logo.png" 
+    alt="Cruzeiro do Sul Virtual" 
+    className="h-12 sm:h-16 md:h-[68px] w-auto max-w-[280px] object-contain hover:scale-105 transition-all" 
+  />
+);
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-      setShowScrollTop(window.scrollY > 500);
+
+      const sections = ['hero', 'cursos', 'beneficios', 'sorteio', 'inscricao'];
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          // Verifica se o topo do scroll bate no elemento considerando o header fixed
+          if (rect.top <= 200 && rect.bottom >= 200) {
+            setActiveSection(section);
+          }
+        }
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-background/80 backdrop-blur-lg shadow-xl py-3' : 'bg-transparent py-5'}`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-lg shadow-xl shadow-black/5 py-3' : 'bg-white/90 backdrop-blur-md py-4'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div className="text-xl md:text-2xl font-extrabold tracking-tighter text-primary">
-          Cruzeiro do Sul Virtual
-        </div>
+        <a href="#" className="flex items-center" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <CSVLogo />
+        </a>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 items-center font-headline font-bold tracking-wide uppercase text-xs">
-          <a href="#" className="text-cta-yellow border-b-2 border-cta-yellow pb-1">Cursos</a>
-          <a href="#beneficios" className="text-primary hover:text-aqua transition-colors">Benefícios</a>
-          <a href="#sorteio" className="text-primary hover:text-aqua transition-colors">Sorteio</a>
+          <a href="#cursos" onClick={(e) => { e.preventDefault(); document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' }); }} className={`text-[#121c43] pb-1 hover:text-[#2a68ff] transition-colors border-b-2 ${activeSection === 'cursos' ? 'border-[#cbd6ff]' : 'border-transparent'}`}>Cursos</a>
+          <a href="#beneficios" className={`text-[#121c43] pb-1 hover:text-[#2a68ff] transition-colors border-b-2 ${activeSection === 'beneficios' ? 'border-[#cbd6ff]' : 'border-transparent'}`}>Benefícios</a>
+          <a href="#sorteio" className={`text-[#121c43] pb-1 hover:text-[#2a68ff] transition-colors border-b-2 ${activeSection === 'sorteio' ? 'border-[#cbd6ff]' : 'border-transparent'}`}>Sorteio</a>
         </div>
 
         <div className="flex items-center gap-4">
           <a 
             href="#inscricao" 
-            className="hidden sm:block bg-cta-yellow text-background px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all active:scale-95 cta-glow shimmer"
+            className="hidden sm:block bg-[#cbd6ff] text-[#121c43] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider hover:opacity-90 hover:bg-[#b6c6ff] transition-all active:scale-95 shadow-md"
           >
             Inscreva-se
           </a>
           
           {/* Mobile Toggle */}
           <button 
-            className="md:hidden text-primary p-2 hover:bg-white/5 rounded-lg transition-colors"
+            className="md:hidden text-[#121c43] p-2 hover:bg-black/5 rounded-lg transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -139,15 +152,15 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="absolute top-full left-0 w-full bg-surface-container-high/95 backdrop-blur-xl border-b border-white/10 overflow-hidden md:hidden"
+            className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-b border-black/10 overflow-hidden md:hidden shadow-2xl"
           >
             <div className="p-6 flex flex-col gap-6">
-              <a href="#" className="text-cta-yellow font-bold uppercase text-sm tracking-widest" onClick={() => setIsMobileMenuOpen(false)}>Cursos</a>
-              <a href="#beneficios" className="text-on-surface font-bold uppercase text-sm tracking-widest hover:text-primary transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Benefícios</a>
-              <a href="#sorteio" className="text-on-surface font-bold uppercase text-sm tracking-widest hover:text-primary transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Sorteio</a>
+              <a href="#cursos" className={`text-[#121c43] w-max font-bold uppercase text-sm tracking-widest hover:text-[#2a68ff] transition-colors border-b-2 ${activeSection === 'cursos' ? 'border-[#cbd6ff]' : 'border-transparent'}`} onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' }); }}>Cursos</a>
+              <a href="#beneficios" className={`text-[#121c43] w-max font-bold uppercase text-sm tracking-widest hover:text-[#2a68ff] transition-colors border-b-2 ${activeSection === 'beneficios' ? 'border-[#cbd6ff]' : 'border-transparent'}`} onClick={() => setIsMobileMenuOpen(false)}>Benefícios</a>
+              <a href="#sorteio" className={`text-[#121c43] w-max font-bold uppercase text-sm tracking-widest hover:text-[#2a68ff] transition-colors border-b-2 ${activeSection === 'sorteio' ? 'border-[#cbd6ff]' : 'border-transparent'}`} onClick={() => setIsMobileMenuOpen(false)}>Sorteio</a>
               <a 
                 href="#inscricao" 
-                className="bg-cta-yellow text-background text-center py-4 rounded-2xl font-bold uppercase text-sm tracking-widest"
+                className="bg-[#cbd6ff] shadow-md text-[#121c43] text-center py-4 rounded-2xl font-bold uppercase text-sm tracking-widest hover:bg-[#b6c6ff] transition-all"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Garantir minha bolsa
@@ -156,59 +169,59 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      
-      {/* Scroll to Top Button */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            onClick={scrollToTop}
-            className="fixed bottom-8 left-8 z-50 p-4 rounded-full bg-primary text-on-primary shadow-2xl hover:scale-110 active:scale-90 transition-all"
-          >
-            <ChevronDown size={24} className="rotate-180" />
-          </motion.button>
-        )}
-      </AnimatePresence>
     </nav>
   );
 };
 
-const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
-  const Icon = course.icon;
+const CourseCard: React.FC<{ course: Course, onSelect?: React.MouseEventHandler<HTMLDivElement> }> = ({ course, onSelect }) => {
+  const Icon = course.icon || BookOpen; // Fallback Icon if not present
   return (
     <motion.div 
       layout
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -12 }}
-      className="group relative glass p-6 rounded-[2.5rem] border border-white/5 hover:border-primary/40 transition-all duration-500 shadow-xl overflow-hidden"
+      whileHover={{ y: -8 }}
+      onClick={onSelect || (() => document.getElementById('beneficios')?.scrollIntoView({ behavior: 'smooth' }))}
+      className="group relative bg-[#0e163d] p-7 rounded-[2.5rem] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-xl overflow-hidden cursor-pointer flex flex-col justify-between"
     >
-      {/* Hover Background Glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      
-      <div className="relative z-10">
-        <div className="flex justify-between items-start mb-6">
-          <div className={`p-4 rounded-2xl ${course.iconBg} ${course.iconColor} shadow-inner`}>
-            <Icon size={28} />
+      <div className="relative z-10 flex flex-col h-full">
+        <div>
+          <div className="flex justify-between items-start mb-6">
+            {/* Box Escura p Icone com a cor respectiva */}
+            <div className={`p-4 rounded-2xl ${course.iconBg || 'bg-[#18234e]'} ${course.iconColor || 'text-[#849bf2]'}`}>
+              <Icon size={24} />
+            </div>
+            {/* Tag Digital/Semipresencial */}
+            <span className={`text-[9px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full ${course.modality === 'Digital' ? 'text-[#00e5ff] border border-[#00e5ff]/20 bg-[#00e5ff]/5' : 'text-[#aebef0] border border-[#aebef0]/20 bg-[#aebef0]/5'}`}>
+              {course.modality}
+            </span>
           </div>
-          <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full ${course.modality === 'Digital' ? 'bg-aqua/10 text-aqua border border-aqua/20' : 'bg-primary/10 text-primary border border-primary/20'}`}>
-            {course.modality}
-          </span>
+          
+          <h3 className="font-headline font-bold text-xl mb-4 text-white leading-tight min-h-[50px] flex items-center">{course.title}</h3>
+          
+          <div className="flex flex-col gap-1.5 mb-8">
+            <p className="text-[11px] sm:text-xs text-[#7a8cc5] font-medium flex items-center flex-wrap gap-x-2 gap-y-1.5 leading-relaxed">
+              <span>{course.category}</span>
+              {course.category.includes('2.0') && (
+                <span className="bg-[#cbd6ff]/10 text-[#cbd6ff] border border-[#cbd6ff]/20 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest shrink-0">
+                  Para Formados
+                </span>
+              )}
+              <span className="opacity-50 hidden sm:inline">•</span>
+              <span className="w-full sm:w-auto mt-0.5 sm:mt-0">{course.duration}</span>
+            </p>
+            {course.area && <p className="text-[10px] sm:text-[11px] text-[#7a8cc5]/60 mt-0.5">{course.area}</p>}
+          </div>
         </div>
         
-        <h3 className="font-headline font-bold text-xl mb-2 group-hover:text-primary transition-colors leading-tight">{course.title}</h3>
-        <p className="text-sm text-on-surface-variant/80 mb-8 font-medium">{course.category} • {course.duration}</p>
-        
-        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+        <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-auto">
           <div className="flex flex-col">
-            <span className="text-[9px] uppercase tracking-widest text-on-surface-variant/40 font-bold mb-0.5">Sorteio</span>
-            <span className="text-tertiary font-extrabold text-sm tracking-tight">BOLSA 85%</span>
+            <span className="text-[9px] uppercase tracking-[0.2em] text-[#7a8cc5]/60 font-bold mb-1">Sorteio</span>
+            <span className="text-[#e6ff1b] font-extrabold text-xs tracking-tight">BOLSA 85%</span>
           </div>
-          <div className="bg-primary/10 p-2 rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
-            <ArrowRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
+          <div className="border border-white/10 p-3 rounded-full hover:bg-white/5 transition-all duration-300 text-[#7a8cc5]">
+            <ArrowRight size={18} className="translate-x-0 transition-transform group-hover:translate-x-1" />
           </div>
         </div>
       </div>
@@ -241,23 +254,163 @@ const CountdownTimer = () => {
   );
 };
 
+const ScrollToTopButton = () => {
+  const [show, setShow] = useState(false);
+  const lastScrollY = React.useRef(0);
+
+  useEffect(() => {
+    const handleGlobalScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 500 && currentScrollY < lastScrollY.current - 15) {
+         setShow(true); // scrolando p/ cima
+      } else if (currentScrollY > lastScrollY.current + 10 || currentScrollY <= 500) {
+         setShow(false); // scrolando p/ baixo ou no topo
+      }
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener('scroll', handleGlobalScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleGlobalScroll);
+  }, []);
+
+  const handleScrollUp = () => {
+    const sectionIds = ['hero', 'cursos', 'beneficios', 'sorteio', 'inscricao'];
+    let targetEl = null;
+    for (let i = sectionIds.length - 1; i >= 0; i--) {
+      const el = document.getElementById(sectionIds[i]);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < -50) {
+          targetEl = el;
+          break;
+        }
+      }
+    }
+    if (targetEl) {
+      if (targetEl.id === 'hero') window.scrollTo({ top: 0, behavior: 'smooth' });
+      else targetEl.scrollIntoView({ behavior: 'smooth' });
+    } else window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.button
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          onClick={handleScrollUp}
+          className="hidden sm:flex fixed bottom-6 lg:bottom-8 right-6 z-[100] py-2 px-4 sm:py-2.5 sm:px-6 rounded-full bg-white shadow-2xl text-[#121c43] hover:bg-gray-50 transition-all items-center gap-2 text-xs font-bold uppercase tracking-widest border border-black/5"
+        >
+          Subir <ChevronDown size={14} className="rotate-180" />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+};
+
 export default function App() {
+  const [courses, setCourses] = useState<Course[]>(COURSES); // State that will receive Supabase data
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('Todos');
+  const [activeArea, setActiveArea] = useState('Todas');
+  const [visibleCount, setVisibleCount] = useState(8);
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [showFriendForm, setShowFriendForm] = useState(false);
+
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
+
+  // Fetch Supabase Data
+  useEffect(() => {
+    const fetchCoursesFromSupabase = async () => {
+      if (!supabase) return;
+      
+      try {
+        const { data, error } = await supabase.from('cursos').select('*');
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          const getAreaVisuals = (title: string, area: string) => {
+            const norm = (title + ' ' + area).toLowerCase();
+            
+            // Ciências Humanas, Sociais e Mentais
+            if (norm.includes('psicolog') || norm.includes('teórico') || norm.includes('psicanál')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
+            if (norm.includes('política') || norm.includes('rh') || norm.includes('social')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+            if (norm.includes('art') || norm.includes('visual')) return { icon: Sparkles, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
+            if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç')) return { icon: BookOpen, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+            
+            // Financeiro, Negócios e Contabilidade
+            if (norm.includes('contáb') || norm.includes('econôm') || norm.includes('financeir')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
+            if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio') || norm.includes('market')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+            
+            // Exatas, Tecnologia e Engenharias
+            if (norm.includes('comp') || norm.includes('sistem') || norm.includes('dado') || norm.includes('soft')) return { icon: Terminal, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
+            if (norm.includes('engenh') || norm.includes('arquit') || norm.includes('urban') || norm.includes('civil')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+
+            // Biológicas e  Saúde
+            if (norm.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
+            if (norm.includes('biol') || norm.includes('ciência bio')) return { icon: Microscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
+            if (norm.includes('agron') || norm.includes('rural') || norm.includes('ambien')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
+            if (norm.includes('nutriç') || norm.includes('nferm') || norm.includes('médic') || norm.includes('farm') || norm.includes('saú') || norm.includes('fisioterap')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+            
+            // Demais Cursos -> Sorteio dinâmico padronizado com cores originais
+            const icons = [Award, Cpu, Clock, Smartphone, Zap, CheckCircle, Activity, Shield];
+            const colors = [
+              { bg: 'bg-violet-500/10', c: 'text-violet-500' },
+              { bg: 'bg-cyan-500/10', c: 'text-cyan-500' },
+              { bg: 'bg-rose-500/10', c: 'text-rose-500' },
+              { bg: 'bg-lime-500/10', c: 'text-lime-500' },
+              { bg: 'bg-amber-500/10', c: 'text-amber-500' }
+            ];
+            const hash = norm.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+            return { icon: icons[hash % icons.length], iconBg: colors[hash % colors.length].bg, iconColor: colors[hash % colors.length].c };
+          };
+
+          const formattedData = data.map((item: any) => {
+            const areaName = item.area || item.area_conhecimento || 'Gerais';
+            const courseTitle = item.title || item.nome_curso || item.curso || 'Curso Sem Nome';
+            return {
+              id: item.id,
+              title: courseTitle,
+              category: item.category || item.categoria || item.grau || 'Geral',
+              duration: item.duration || item.duracao || item.semestres || '4 anos',
+              area: areaName,
+              modality: item.modality || item.modalidade || 'Digital',
+              ...getAreaVisuals(courseTitle, areaName)
+            };
+          });
+          
+          // Remove todos os cursos que contenham formacao pedagogica do resultado e seta no Estado
+          const finalFilteredData = formattedData.filter((c: any) => !c.title.toLowerCase().includes('formação pedagógica'));
+          setCourses(finalFilteredData);
+        }
+      } catch (err) {
+        console.error("Erro ao puxar dados do Supabase:", err);
+      }
+    };
+    fetchCoursesFromSupabase();
+  }, []);
+
+  const maskPhone = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4,5})(\d{4})\d+?$/, '$1-$2');
+  };
 
   const filteredCourses = useMemo(() => {
-    return COURSES.filter(course => {
+    return courses.filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === 'Todos' || course.category === activeCategory;
-      return matchesSearch && matchesCategory;
+      const matchesArea = activeArea === 'Todas' || course.area === activeArea;
+      return matchesSearch && matchesArea;
     });
-  }, [searchQuery, activeCategory]);
+  }, [courses, searchQuery, activeArea]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus('loading');
-    setTimeout(() => setFormStatus('success'), 1500);
+    setTimeout(() => {
+      setFormStatus('success');
+      // Opcional: setFormData({ name: '', email: '', phone: '', course: '' }); após salvar.
+    }, 1500);
   };
 
   return (
@@ -265,7 +418,7 @@ export default function App() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-24 px-6 overflow-hidden">
+      <section id="hero" className="relative pt-40 pb-24 px-6 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_0%,_rgba(184,195,255,0.15)_0%,_transparent_70%)] pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto text-center relative z-10">
@@ -297,47 +450,71 @@ export default function App() {
           </motion.p>
 
           {/* Search Container */}
-          <motion.div 
+          <motion.form 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            className="max-w-3xl mx-auto glass p-2.5 rounded-full flex flex-col sm:flex-row items-center shadow-2xl border border-white/10 gap-2"
+            onSubmit={(e) => { 
+              e.preventDefault(); 
+              document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' });
+              // A request de "limpe para nova pesquisa" sem quebrar o feedback visual do usuário 
+              // foi implementada como um botão clear ativo e o active section tracker já orientando.
+            }}
+            className="max-w-3xl mx-auto bg-[#0a1236]/90 p-2 sm:p-2.5 rounded-[2rem] sm:rounded-full flex flex-col sm:flex-row items-center shadow-2xl border border-white/10 gap-3 sm:gap-2"
           >
-            <div className="flex-1 flex items-center w-full px-4">
-              <Search size={20} className="text-primary/60 shrink-0" />
+            <div className="flex-1 flex items-center w-full px-4 pt-3 sm:pt-0 pb-1 sm:pb-0 relative">
+              <label htmlFor="searchQuery" className="sr-only">Procurar curso</label>
+              <Search size={22} className="text-[#849bf2] shrink-0" />
               <input 
+                id="searchQuery"
+                name="searchQuery"
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Qual curso você está procurando hoje?"
-                className="bg-transparent border-none focus:ring-0 text-on-surface w-full px-4 placeholder:text-on-surface-variant/40 font-medium text-sm md:text-base"
+                className="bg-transparent border-none focus:ring-0 text-[#c7d5fa] w-full px-4 pr-10 placeholder:text-[#6a7fc8] font-medium text-base sm:text-lg outline-none"
               />
+              <AnimatePresence>
+                {searchQuery && (
+                  <motion.button 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    type="button" 
+                    onClick={() => { setSearchQuery(''); document.querySelector('input')?.focus(); }}
+                    className="absolute right-4 text-[#6a7fc8] hover:text-white transition-colors bg-white/5 p-1 rounded-full backdrop-blur-md"
+                    title="Limpar para nova pesquisa"
+                  >
+                    <X size={16} />
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </div>
-            <button className="w-full sm:w-auto bg-primary text-on-primary px-10 py-4 rounded-full font-bold hover:brightness-110 transition-all whitespace-nowrap active:scale-95">
+            <button type="submit" className="w-full sm:w-auto bg-[#b6c6ff] text-[#0e1645] px-10 py-4 sm:py-5 rounded-[1.5rem] sm:rounded-full font-bold sm:text-lg hover:brightness-110 transition-all whitespace-nowrap active:scale-95 shadow-[0_4px_20px_rgba(182,198,255,0.2)]">
               Buscar Agora
             </button>
-          </motion.div>
+          </motion.form>
         </div>
       </section>
 
       {/* Catalog Section */}
-      <section className="py-24 px-6 bg-surface-container-low/30 relative">
+      <section id="cursos" className="py-24 px-6 bg-surface-container-low/30 relative">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
             <div>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-3">Explore por Categoria</h2>
-              <p className="text-on-surface-variant text-lg">São centenas de opções para você decolar.</p>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-3 text-white">Explore por Área</h2>
+              <p className="text-[#aebef0] text-lg">São centenas de opções para você decolar.</p>
             </div>
             
             {/* Categories Tabs */}
-            <div className="flex overflow-x-auto pb-4 lg:pb-0 gap-3 scrollbar-hide">
-              {CATEGORIES.map(cat => (
+            <div className="flex flex-wrap pb-4 lg:pb-0 gap-2 sm:gap-3 overflow-visible px-1">
+              {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean)].map(area => (
                 <button 
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-7 py-3.5 rounded-2xl font-bold whitespace-nowrap transition-all duration-300 ${activeCategory === cat ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'bg-surface-container-high text-on-surface hover:bg-surface-container-highest'}`}
+                  key={area as string}
+                  onClick={() => { setActiveArea(area as string); setVisibleCount(8); }}
+                  className={`px-7 py-3 rounded-[1rem] font-bold whitespace-nowrap transition-all duration-300 ${activeArea === area ? 'bg-[#cbd6ff] text-[#121c43] shadow-lg shadow-[#cbd6ff]/20' : 'bg-[#18234e] text-[#aebef0] hover:bg-[#1f2b5c]'}`}
                 >
-                  {cat}
+                  {area as string}
                 </button>
               ))}
             </div>
@@ -346,11 +523,32 @@ export default function App() {
           {/* Bento Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <AnimatePresence mode="popLayout">
-              {filteredCourses.map(course => (
-                <CourseCard key={course.id} course={course} />
+              {filteredCourses.slice(0, visibleCount).map(course => (
+                <CourseCard 
+                  key={course.id} 
+                  course={course} 
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    // Auto-preenche o select do formulário ativando UX instantânea 
+                    setFormData(prev => ({ ...prev, course: course.title }));
+                    // Rola fluidamente com margem pro formulário
+                    document.getElementById('inscricao')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
               ))}
             </AnimatePresence>
           </div>
+          
+          {visibleCount < filteredCourses.length && (
+            <div className="flex justify-center mt-12 w-full">
+              <button 
+                onClick={() => setVisibleCount(prev => prev + 12)} 
+                className="px-10 py-4 rounded-full border border-white/10 text-[#aebef0] font-bold hover:bg-[#18234e] hover:text-white transition-all active:scale-95"
+              >
+                Ver mais cursos
+              </button>
+            </div>
+          )}
           
           {filteredCourses.length === 0 && (
             <div className="text-center py-20">
@@ -410,9 +608,14 @@ export default function App() {
             <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-tertiary/20 rounded-full blur-[120px]"></div>
             
             <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 mb-10 backdrop-blur-xl">
-                <Sparkles size={18} className="text-cta-yellow" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-on-surface">Bolsas liberadas esta semana</span>
+              <div className="mb-6 -mt-4">
+                <style>{`@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');`}</style>
+                <span 
+                  className="text-[#faff5b] block transform -rotate-2 drop-shadow-md" 
+                  style={{ fontFamily: "'Caveat', cursive", fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: '1' }}
+                >
+                  Escolha ter estrela.
+                </span>
               </div>
               
               <h2 className="font-headline text-4xl md:text-7xl font-extrabold mb-8 leading-[1.1]">
@@ -428,9 +631,9 @@ export default function App() {
                 <CountdownTimer />
               </div>
 
-              <button className="bg-cta-yellow text-background px-14 py-6 rounded-full font-black text-xl uppercase tracking-wider hover:scale-105 transition-all duration-300 active:scale-95 cta-glow animate-glow-pulse">
+              <a href="#inscricao" className="inline-block w-full md:w-auto bg-cta-yellow text-background px-8 py-4 sm:px-12 sm:py-5 rounded-full font-black text-base sm:text-xl text-center uppercase tracking-wider hover:scale-105 transition-all duration-300 active:scale-95 cta-glow animate-glow-pulse">
                 QUERO CONCORRER À BOLSA
-              </button>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -469,134 +672,212 @@ export default function App() {
           </div>
 
           {/* Form Card */}
-          <div className="lg:w-1/2 w-full max-w-xl">
-            <div className="bg-gradient-to-br from-surface-container-highest to-background p-10 md:p-14 rounded-[3.5rem] shadow-2xl border border-white/10 relative overflow-hidden">
-              <div className="absolute -top-32 -right-32 w-64 h-64 bg-aqua/10 rounded-full blur-[100px]"></div>
+          <div className="lg:w-1/2 w-full max-w-xl mx-auto">
+            <div className="bg-[#121c43] p-10 md:p-14 rounded-[3.5rem] border border-white/10 relative overflow-hidden transition-all duration-500 shadow-[0_20px_60px_-15px_rgba(0,10,30,0.8)]">
+              <div className="absolute -top-32 -right-32 w-80 h-80 bg-aqua/5 rounded-full blur-[100px] pointer-events-none"></div>
               
-              <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">Nome Completo</label>
-                  <input 
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none" 
-                    placeholder="Seu nome aqui" 
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">E-mail</label>
-                    <input 
-                      required
-                      type="email"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none" 
-                      placeholder="exemplo@email.com" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">WhatsApp</label>
-                    <input 
-                      required
-                      type="tel"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface placeholder:text-white/20 outline-none" 
-                      placeholder="(00) 00000-0000" 
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 ml-1">Curso de interesse</label>
-                  <div className="relative">
-                    <select 
-                      defaultValue=""
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface appearance-none cursor-pointer outline-none"
+              <AnimatePresence mode="wait">
+                {formStatus === 'success' ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative z-10 flex flex-col items-center justify-center text-center py-10"
+                  >
+                    <div className="w-24 h-24 mb-8 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30">
+                      <CheckCircle size={48} className="text-green-400" />
+                    </div>
+                    <h3 className="font-headline text-3xl font-extrabold text-white mb-4">Inscrição Validada!</h3>
+                    <p className="text-[#aebef0] text-lg mb-8 leading-relaxed max-w-sm">
+                      Sua participação no Sorteio de até 85% de Bolsa foi carimbada com sucesso! Fique de olho: uma mensagem oficial vai chegar no seu WhatsApp muito em breve com os próximos passos. Prepare-se para voar longe!
+                    </p>
+                    <button 
+                      onClick={() => setFormStatus('idle')}
+                      className="bg-white/10 text-white font-bold px-10 py-4 rounded-2xl hover:bg-white/20 transition-colors uppercase tracking-wider text-sm"
                     >
-                      <option className="bg-background" value="" disabled>Escolha um curso...</option>
-                      <optgroup className="bg-background" label="Tecnologia">
-                        <option>Análise e Desenv. de Sistemas</option>
-                        <option>Cibersegurança</option>
-                        <option>Ciência da Computação</option>
-                        <option>Sistemas de Informação</option>
-                      </optgroup>
-                      <optgroup className="bg-background" label="Saúde">
-                        <option>Biomedicina</option>
-                        <option>Enfermagem</option>
-                        <option>Farmácia</option>
-                        <option>Fisioterapia</option>
-                        <option>Nutrição</option>
-                        <option>Psicologia</option>
-                      </optgroup>
-                      <optgroup className="bg-background" label="Negócios & Outros">
-                        <option>Administração</option>
-                        <option>Ciências Contábeis</option>
-                        <option>Direito</option>
-                        <option>Marketing Digital</option>
-                        <option>Pedagogia</option>
-                        <option>Agronomia</option>
-                        <option>Arquitetura e Urbanismo</option>
-                        <option>Engenharia Civil</option>
-                      </optgroup>
-                    </select>
-                    <ChevronDown size={20} className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-primary/60" />
-                  </div>
-                </div>
+                      Voltar ao Início
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form 
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    onSubmit={handleSubmit} 
+                    className="space-y-6 relative z-10"
+                  >
+                    <div className="space-y-2">
+                      <label htmlFor="studentName" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Nome Completo</label>
+                      <input 
+                        id="studentName"
+                        name="studentName"
+                        autoComplete="name"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner" 
+                        placeholder="Seu nome aqui" 
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="studentEmail" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">E-mail</label>
+                        <input 
+                          id="studentEmail"
+                          name="studentEmail"
+                          autoComplete="email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          type="email"
+                          className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner" 
+                          placeholder="exemplo@email.com" 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="studentPhone" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Seu WhatsApp</label>
+                        <input 
+                          id="studentPhone"
+                          name="studentPhone"
+                          autoComplete="tel"
+                          required
+                          value={formData.phone}
+                          onChange={(e) => setFormData({...formData, phone: maskPhone(e.target.value)})}
+                          type="tel"
+                          className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner" 
+                          placeholder="(00) 00000-0000" 
+                          maxLength={15}
+                        />
+                      </div>
+                    </div>
 
-                <button 
-                  disabled={formStatus !== 'idle'}
-                  className="w-full bg-cta-yellow text-background py-5 rounded-2xl font-bold text-lg hover:brightness-110 active:scale-[0.98] transition-all cta-glow disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {formStatus === 'idle' && 'GARANTIR MINHA CHANCE'}
-                  {formStatus === 'loading' && 'PROCESSANDO...'}
-                  {formStatus === 'success' && 'INSCRITO COM SUCESSO!'}
-                </button>
-                
-                <p className="text-center text-[10px] text-white/30 uppercase tracking-widest">
-                  Seus dados estão seguros conosco.
-                </p>
-              </form>
+                    <div className="space-y-2 pb-2">
+                       <label htmlFor="studentCourse" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Curso de interesse</label>
+                       <div className="relative">
+                         <select 
+                           id="studentCourse"
+                           name="studentCourse"
+                           required
+                           value={formData.course}
+                           onChange={(e) => setFormData({...formData, course: e.target.value})}
+                           className={`w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all outline-none appearance-none cursor-pointer shadow-inner ${formData.course ? 'text-[#c7d5fa]' : 'text-[#425492]'}`}
+                         >
+                           <option className="bg-[#121c43] text-white/50" value="" disabled>Escolha seu curso...</option>
+                           
+                           {/* Renderiza dinamicamente as categorias e cursos */}
+                           {Array.from(new Set(courses.map(c => c.category))).map(category => (
+                             <optgroup key={`main_${category}`} className="bg-[#121c43] text-[#aebef0]" label={category}>
+                               {courses.filter(c => c.category === category).map(course => (
+                                 <option key={`main_${course.id}`} value={course.title}>
+                                   {course.title}
+                                 </option>
+                               ))}
+                             </optgroup>
+                           ))}
+                         </select>
+                         <ChevronDown size={20} className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#869bea]" />
+                       </div>
+                    </div>
+
+                    {/* Switch Indique um amigo */}
+                    <div 
+                      className={`p-5 rounded-[1.25rem] border transition-all cursor-pointer ${showFriendForm ? 'bg-[#faff5b]/10 border-[#faff5b]/30 shadow-inner' : 'bg-[#18234e] border-white/5 hover:border-[#faff5b]/30 hover:bg-[#18234e]/80'}`}
+                      onClick={() => setShowFriendForm(!showFriendForm)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-5 h-5 shrink-0 rounded flex items-center justify-center border transition-all ${showFriendForm ? 'bg-[#faff5b] border-[#faff5b]' : 'border-white/30 bg-transparent'}`}>
+                           {showFriendForm && <CheckCircle size={14} className="text-[#121c43]" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-xs sm:text-sm text-[#faff5b] tracking-wider uppercase">Indique um Amigo (Dobre a Chance!)</p>
+                        </div>
+                      </div>
+                      
+                      <AnimatePresence>
+                        {showFriendForm && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden mt-4 pt-4 border-t border-white/10 space-y-4"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <label htmlFor="friendNameInput" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Nome dele(a)</label>
+                                <input 
+                                  id="friendNameInput"
+                                  name="friendNameInput"
+                                  value={formData.friendName}
+                                  onChange={(e) => setFormData({...formData, friendName: e.target.value})}
+                                  type="text"
+                                  className="w-full bg-[#0a1236]/80 border border-white/5 rounded-xl py-3.5 px-4 focus:ring-1 focus:ring-[#faff5b] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none text-sm" 
+                                  placeholder="Nome do seu amigo" 
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <label htmlFor="friendPhoneInput" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">WhatsApp dele(a)</label>
+                                <input 
+                                  id="friendPhoneInput"
+                                  name="friendPhoneInput"
+                                  value={formData.friendPhone}
+                                  onChange={(e) => setFormData({...formData, friendPhone: maskPhone(e.target.value)})}
+                                  type="tel"
+                                  className="w-full bg-[#0a1236]/80 border border-white/5 rounded-xl py-3.5 px-4 focus:ring-1 focus:ring-[#faff5b] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none text-sm" 
+                                  placeholder="(00) 00000-0000" 
+                                  maxLength={15}
+                                />
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      disabled={formStatus !== 'idle'}
+                      className="w-full bg-[#ebff46] text-[#121c43] mt-4 py-[22px] rounded-[1rem] font-bold text-lg sm:text-xl hover:brightness-110 hover:-translate-y-1 hover:shadow-[0_10px_40px_-5px_rgba(235,255,70,0.6)] active:scale-[0.98] active:translate-y-0 transition-all font-headline tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none shadow-[0_5px_30px_-10px_rgba(235,255,70,0.5)]"
+                    >
+                      {formStatus === 'idle' && 'Garantir minha chance'}
+                      {formStatus === 'loading' && 'Processando...'}
+                    </button>
+                    
+                    <p className="text-center text-[10px] text-[#697bbb] uppercase tracking-widest mt-6">
+                      Seus dados estão seguros conosco.
+                    </p>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-background w-full py-16 border-t border-white/5">
+      <footer className="bg-white text-[#121c43] w-full py-16 border-t border-black/5">
         <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="text-2xl font-extrabold tracking-tighter text-primary">
-            Cruzeiro do Sul Virtual
+          <a href="#" className="flex items-center" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+            <CSVLogo />
+          </a>
+          
+          <div className="flex flex-wrap justify-center gap-8 font-headline text-xs font-bold uppercase tracking-widest text-[#121c43]/60">
+            <a href="#" className="hover:text-[#2a68ff] transition-colors">Privacidade</a>
+            <a href="#" className="hover:text-[#2a68ff] transition-colors">Termos</a>
+            <a href="#" className="hover:text-[#2a68ff] transition-colors">Regulamento</a>
+            <a href="#" className="hover:text-[#2a68ff] transition-colors">Contato</a>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-8 font-headline text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">
-            <a href="#" className="hover:text-cta-yellow transition-colors">Privacidade</a>
-            <a href="#" className="hover:text-cta-yellow transition-colors">Termos</a>
-            <a href="#" className="hover:text-cta-yellow transition-colors">Regulamento</a>
-            <a href="#" className="hover:text-cta-yellow transition-colors">Contato</a>
-          </div>
-          
-          <div className="text-[10px] text-on-surface-variant/40 uppercase tracking-widest text-center md:text-right">
+          <div className="text-[10px] text-[#121c43]/40 uppercase tracking-widest text-center md:text-right font-bold">
             © 2026 Cruzeiro do Sul Virtual. <br className="md:hidden"/> Todos os direitos reservados.
           </div>
         </div>
       </footer>
 
-      {/* Floating Alert */}
-      <motion.div 
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="fixed bottom-8 right-8 z-40 hidden lg:block"
-      >
-        <div className="glass p-5 rounded-3xl border border-tertiary/20 shadow-2xl max-w-[280px]">
-          <div className="flex items-start gap-4">
-            <div className="p-2.5 rounded-2xl bg-tertiary/20 text-tertiary">
-              <Sparkles size={24} />
-            </div>
-            <div>
-              <p className="font-bold text-sm text-on-surface mb-1">Sorteio Ativo!</p>
-              <p className="text-xs text-on-surface-variant leading-relaxed">Bolsas de até 85% para novos alunos. Não perca!</p>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      {/* Remover o Sorteio Ativo Alert Flutuante - Lixeira! */}
+      <ScrollToTopButton />
     </div>
   );
 }
