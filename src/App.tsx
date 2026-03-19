@@ -642,11 +642,6 @@ export default function App() {
                 Participe do sorteio exclusivo e transforme seu futuro. São centenas de bolsas contempladas mensalmente! Não deixe sua carreira para depois.
               </p>
 
-              <div className="flex flex-col items-center gap-4 mb-14">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-primary/60 font-bold">O próximo sorteio encerra em:</span>
-                <CountdownTimer />
-              </div>
-
               <a href="#inscricao" className="inline-block w-full md:w-auto bg-cta-yellow text-background px-8 py-4 sm:px-12 sm:py-5 rounded-full font-black text-base sm:text-xl text-center uppercase tracking-wider hover:scale-105 transition-all duration-300 active:scale-95 cta-glow animate-glow-pulse">
                 QUERO CONCORRER À BOLSA
               </a>
