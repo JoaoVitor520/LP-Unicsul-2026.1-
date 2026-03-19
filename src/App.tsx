@@ -45,6 +45,7 @@ interface Course {
   id: number;
   title: string;
   category: string;
+  duration: string;
   modality: 'Digital' | 'Semipresencial';
   icon: React.ElementType;
   iconBg: string;
@@ -81,7 +82,6 @@ function getCourseIcon(title: string, grau: string): { icon: React.ElementType; 
   return { icon: GraduationCap, iconBg: 'bg-primary/10', iconColor: 'text-primary' };
 }
 
-const CATEGORIES = ['Todos', 'Bacharelado', 'Bacharelado 2.0', 'Licenciatura', 'Licenciatura 2.0', 'Tecnólogo'];
 
 // --- Components ---
 
@@ -264,13 +264,14 @@ export default function App() {
     async function fetchCourses() {
       const { data, error } = await supabase
         .from('cursos')
-        .select('id, title, category, modality')
+        .select('id, title, category, duration, modality')
         .order('title');
       if (!error && data) {
-        const mapped: Course[] = data.map((row: { id: number; title: string; category: string; modality: string }) => ({
+        const mapped: Course[] = data.map((row: { id: number; title: string; category: string; duration: string; modality: string }) => ({
           id: row.id,
           title: row.title,
           category: row.category,
+          duration: row.duration ?? '',
           modality: row.modality as 'Digital' | 'Semipresencial',
           ...getCourseIcon(row.title, row.category),
         }));
@@ -280,6 +281,20 @@ export default function App() {
     }
     fetchCourses();
   }, []);
+
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set<string>(courses.map(c => c.category))).sort((a, b) => a.localeCompare(b, 'pt'));
+    return ['Todos', ...cats];
+  }, [courses]);
+
+  const coursesByCategory = useMemo(() => {
+    const map: Record<string, Course[]> = {};
+    courses.forEach(c => {
+      if (!map[c.category]) map[c.category] = [];
+      map[c.category].push(c);
+    });
+    return map;
+  }, [courses]);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
@@ -378,8 +393,8 @@ export default function App() {
             
             {/* Categories Tabs */}
             <div className="flex overflow-x-auto pb-4 lg:pb-0 gap-3 scrollbar-hide">
-              {CATEGORIES.map(cat => (
-                <button 
+              {categories.map(cat => (
+                <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`px-7 py-3.5 rounded-2xl font-bold whitespace-nowrap transition-all duration-300 ${activeCategory === cat ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'bg-surface-container-high text-on-surface hover:bg-surface-container-highest'}`}
@@ -574,8 +589,12 @@ export default function App() {
                       className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:ring-2 focus:ring-aqua focus:border-transparent transition-all text-on-surface appearance-none cursor-pointer outline-none"
                     >
                       <option className="bg-background" value="" disabled>Escolha um curso...</option>
-                      {courses.map(c => (
-                        <option key={c.id} className="bg-background" value={c.title}>{c.title}</option>
+                      {(Object.entries(coursesByCategory) as [string, Course[]][]).sort(([a], [b]) => a.localeCompare(b, 'pt')).map(([cat, list]) => (
+                        <optgroup key={cat} className="bg-background" label={cat}>
+                          {list.map(c => (
+                            <option key={c.id} className="bg-background" value={c.title}>{c.title}</option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
                     <ChevronDown size={20} className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-primary/60" />
