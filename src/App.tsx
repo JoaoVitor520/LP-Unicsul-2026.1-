@@ -433,6 +433,8 @@ export default function App() {
         curso: formData.course,
         indicacao: formData.indicacao,
         nome_indicacao: formData.nomeIndicacao || null,
+        amigo_nome: formData.friendName || null,
+        amigo_whatsapp: formData.friendPhone || null,
       }]);
       
       if (error) {
