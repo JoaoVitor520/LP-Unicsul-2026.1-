@@ -264,15 +264,15 @@ export default function App() {
     async function fetchCourses() {
       const { data, error } = await supabase
         .from('cursos')
-        .select('id, title, grau, modalidade')
+        .select('id, title, category, modality')
         .order('title');
       if (!error && data) {
-        const mapped: Course[] = data.map((row: { id: number; title: string; grau: string; modalidade: string }) => ({
+        const mapped: Course[] = data.map((row: { id: number; title: string; category: string; modality: string }) => ({
           id: row.id,
           title: row.title,
-          category: row.grau,
-          modality: row.modalidade as 'Digital' | 'Semipresencial',
-          ...getCourseIcon(row.title, row.grau),
+          category: row.category,
+          modality: row.modality as 'Digital' | 'Semipresencial',
+          ...getCourseIcon(row.title, row.category),
         }));
         setCourses(mapped);
       }
