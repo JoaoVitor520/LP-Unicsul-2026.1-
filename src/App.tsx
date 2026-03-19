@@ -316,7 +316,8 @@ export default function App() {
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [showFriendForm, setShowFriendForm] = useState(false);
 
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', indicacao: '', friendName: '', friendPhone: '', friendCourse: '' });
+  const [phoneError, setPhoneError] = useState('');
 
   // Fetch Supabase Data
   useEffect(() => {
@@ -389,11 +390,22 @@ export default function App() {
     fetchCoursesFromSupabase();
   }, []);
 
-  const maskPhone = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{4,5})(\d{4})\d+?$/, '$1-$2');
+  const maskPhone = (value: string): string => {
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
+
+  const validarPhone = (valor: string): boolean => {
+    const digits = valor.replace(/\D/g, '');
+    if (digits.length < 10 || digits.length > 11) return false;
+    if (/^(\d)\1+$/.test(digits)) return false;
+    if (digits === '12345678901' || digits === '10987654321') return false;
+    const ddd = parseInt(digits.substring(0, 2));
+    if (ddd < 11 || ddd > 99) return false;
+    return true;
   };
 
   const filteredCourses = useMemo(() => {
@@ -406,15 +418,20 @@ export default function App() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validarPhone(formData.phone)) {
+      setPhoneError('Informe um número de WhatsApp válido.');
+      return;
+    }
+    setPhoneError('');
     setFormStatus('loading');
-    
+
     if (supabase) {
-      // Tentativa de envio para base remota herdada do merge
       const { error } = await supabase.from('leads').insert([{
         nome: formData.name,
         email: formData.email,
         whatsapp: formData.phone,
-        curso: formData.course
+        curso: formData.course,
+        indicacao: formData.indicacao,
       }]);
       
       if (error) {
@@ -749,18 +766,43 @@ export default function App() {
                       </div>
                       <div className="space-y-2">
                         <label htmlFor="studentPhone" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Seu WhatsApp</label>
-                        <input 
+                        <input
                           id="studentPhone"
                           name="studentPhone"
                           autoComplete="tel"
                           required
                           value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: maskPhone(e.target.value)})}
+                          onChange={(e) => { setFormData({...formData, phone: maskPhone(e.target.value)}); if (phoneError) setPhoneError(''); }}
                           type="tel"
-                          className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner" 
-                          placeholder="(00) 00000-0000" 
+                          className={`w-full bg-[#18234e] border rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner ${phoneError ? 'border-red-500' : 'border-white/10'}`}
+                          placeholder="(00) 00000-0000"
                           maxLength={15}
                         />
+                        {phoneError && <p className="text-xs text-red-400 ml-1 mt-1">{phoneError}</p>}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="studentIndicacao" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Como ficou sabendo?</label>
+                      <div className="relative">
+                        <select
+                          id="studentIndicacao"
+                          name="studentIndicacao"
+                          required
+                          value={formData.indicacao}
+                          onChange={(e) => setFormData({...formData, indicacao: e.target.value})}
+                          className={`w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all outline-none appearance-none cursor-pointer shadow-inner ${formData.indicacao ? 'text-[#c7d5fa]' : 'text-[#425492]'}`}
+                        >
+                          <option className="bg-[#121c43] text-white/50" value="" disabled>Selecione uma opção...</option>
+                          <option className="bg-[#121c43]" value="Indicação de amigo ou familiar">Indicação de amigo ou familiar</option>
+                          <option className="bg-[#121c43]" value="Instagram">Instagram</option>
+                          <option className="bg-[#121c43]" value="Facebook">Facebook</option>
+                          <option className="bg-[#121c43]" value="Google">Google</option>
+                          <option className="bg-[#121c43]" value="WhatsApp">WhatsApp</option>
+                          <option className="bg-[#121c43]" value="E-mail">E-mail</option>
+                          <option className="bg-[#121c43]" value="Outros">Outros</option>
+                        </select>
+                        <ChevronDown size={20} className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#869bea]" />
                       </div>
                     </div>
 
