@@ -458,16 +458,16 @@ export default function App() {
             className="font-headline text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-on-surface mb-8 leading-[1.1] sm:leading-[1.05]"
           >
             Encontre o curso que vai <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-aqua">mudar sua vida.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-aqua block sm:inline-block mt-2 sm:mt-0 whitespace-nowrap">mudar sua vida.</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="max-w-2xl mx-auto text-on-surface-variant text-lg md:text-xl mb-14 leading-relaxed"
           >
-            Explore nosso catálogo gigante e dê o primeiro passo para o <span className="text-tertiary font-bold">SORTEIO DE BOLSAS DE 85%</span>. Sua carreira de sucesso começa aqui.
+            Descubra o curso ideal para você e participe do <span className="text-tertiary font-bold">SORTEIO DE BOLSAS DE ATÉ 85%</span>. Transforme seu potencial em uma carreira de sucesso hoje mesmo.
           </motion.p>
 
           {/* Search Container */}
@@ -640,7 +640,7 @@ export default function App() {
               </div>
 
               <h2 className="font-headline text-4xl md:text-7xl font-extrabold mb-8 leading-[1.1]">
-                Sua Bolsa de <span className="text-tertiary">85%</span> <br className="hidden md:block" /> está te esperando!
+                Sua Bolsa de <span className="text-tertiary">até 85%</span> <br className="hidden md:block" /> está te esperando!
               </h2>
 
               <p className="max-w-2xl mx-auto text-on-surface-variant text-lg md:text-xl mb-14 leading-relaxed">
@@ -666,7 +666,7 @@ export default function App() {
             >
               <h2 className="font-headline text-4xl md:text-6xl font-extrabold mb-8 leading-tight">Inscreva-se e <br /> mude seu destino</h2>
               <p className="text-on-surface-variant text-xl mb-12 leading-relaxed">
-                Não perca a chance de transformar sua carreira com uma <span className="text-tertiary font-bold">BOLSA DE 85%</span>. Conte com acompanhamento próximo, professores mestres e doutores e a melhor tecnologia do mundo.
+                Não perca a chance de transformar sua carreira com uma <span className="text-tertiary font-bold">BOLSA DE ATÉ 85%</span>. Conte com acompanhamento próximo, professores mestres e doutores e a melhor tecnologia do mundo.
               </p>
 
               <div className="space-y-6">
