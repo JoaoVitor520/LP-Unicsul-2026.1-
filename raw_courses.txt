@@ -1,0 +1,152 @@
+Administração 2.0	Digital	Bacharelado 2.0	Gestão e Negócios	4 semestres
+Administração	Digital	Bacharelado	Gestão e Negócios	8 semestres
+Administração Pública	Digital	Bacharelado	Gestão e Negócios	8 semestres
+Ciência Da Computação	Digital	Bacharelado	Tecnologia	8 semestres
+Ciência Política	Digital	Bacharelado	Ciências Sociais	6 semestres
+Ciências Contábeis	Digital	Bacharelado	Gestão e Negócios	8 semestres
+Ciências Contábeis 2.0	Digital	Bacharelado 2.0	Gestão e Negócios	2 semestres
+Ciências Econômicas	Digital	Bacharelado	Gestão e Negócios	8 semestres
+Ciências Econômicas 2.0	Digital	Bacharelado 2.0	Gestão e Negócios	4 semestres
+Cst Em Análise De Dados De Alta Performance	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Banco De Dados	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Cibersegurança	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Ciência De Dados	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Coaching E Mentoring	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Coding	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Comércio Exterior	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Computação Em Nuvem	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Conciliação, Mediação E Arbitragem	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Criminologia	Digital	Tecnólogo	Ciências Sociais	4 semestres
+Cst Em Desenvolvimento Back-End	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Desenvolvimento Full Stack	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Desenvolvimento Mobile	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Design De Animação	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Design De Experiência	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Design De Interiores	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Design De Moda	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Design De Produto	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Design Gráfico	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Empreendedorismo	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Eventos	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Fotografia	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Gastronomia	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Comercial	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Da Produção Industrial	Digital	Tecnólogo	Engenharias	4 semestres
+Cst Em Gestão Da Qualidade	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Da Saúde Pública	Digital	Tecnólogo	Gestão e Negócios	6 semestres
+Cst Em Gestão Da Tecnologia Da Informação	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Gestão Das Organizações Do Terceiro Setor	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão De Cooperativas	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão De Negócios Imobiliários	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão De Recursos Humanos	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão De Segurança Privada	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão De Turismo	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Desportiva E De Lazer	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Do Agronegócio	Digital	Tecnólogo	Agrárias	4 semestres
+Cst Em Gestão Financeira	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Pública	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Influenciador Digital	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Inteligência Artificial	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Internet Das Coisas	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Jogos Digitais	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Logística	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Marketing	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Marketing Digital	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Perícia Judicial E Extrajudicial	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Processos Gerenciais	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Produção Audiovisual	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Produção Cultural	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Produção Midiática	Digital	Tecnólogo	Comunicação	4 semestres
+Cst Em Redes De Computadores	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Secretariado	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Segurança Da Informação	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Segurança No Trabalho	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Segurança No Trânsito	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Segurança Pública	Digital	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Serviços Jurídicos E Notariais	Digital	Tecnólogo	Ciências Sociais	4 semestres
+Cst Em Serviços Penais	Digital	Tecnólogo	Ciências Sociais	4 semestres
+Cst Em Sistemas Para Internet	Digital	Tecnólogo	Tecnologia	4 semestres
+Engenharia De Software	Digital	Bacharelado	Tecnologia	8 semestres
+Filosofia	Digital	Bacharelado	Educação	6 semestres
+Geografia	Digital	Bacharelado	Educação	6 semestres
+História	Digital	Bacharelado	Educação	6 semestres
+Interdisciplinar Em Humanidades	Digital	Bacharelado	Educação	6 semestres
+Jornalismo	Digital	Bacharelado	Comunicação	8 semestres
+Estudos Teóricos Psicanalíticos e Sociais	Digital	Bacharelado	Saúde	8 semestres
+Publicidade E Propaganda	Digital	Bacharelado	Comunicação	8 semestres
+Relações Internacionais	Digital	Bacharelado	Gestão e Negócios	6 semestres
+Relações Públicas	Digital	Bacharelado	Comunicação	8 semestres
+Sistemas De Informação	Digital	Bacharelado	Tecnologia	8 semestres
+Teologia	Digital	Bacharelado	Ciências Sociais	6 semestres
+Administração	Semipresencial	Bacharelado	Gestão e Negócios	8 semestres
+Agronomia	Semipresencial	Bacharelado	Agrárias	10 semestres
+Arquitetura E Urbanismo	Semipresencial	Bacharelado	Engenharias	10 semestres
+Artes Visuais	Semipresencial	Licenciatura	Educação	8 semestres
+Biomedicina	Semipresencial	Bacharelado	Saúde	8 semestres
+Ciência Da Computação	Semipresencial	Bacharelado	Tecnologia	8 semestres
+Ciências Biológicas	Semipresencial	Bacharelado	Educação	8 semestres
+Ciências Biológicas	Semipresencial	Licenciatura	Educação	8 semestres
+Ciências Contábeis	Semipresencial	Bacharelado	Gestão e Negócios	8 semestres
+Ciências Sociais	Semipresencial	Licenciatura	Ciências Sociais	8 semestres
+Cst Em Análise E Desenvolvimento De Sistemas 	Digital	Tecnólogo	Tecnologia	4 semestres
+Cst Em Design De Moda	Semipresencial	Tecnólogo	Comunicação	4 semestres
+Cst Em Design Gráfico	Semipresencial	Tecnólogo	Comunicação	4 semestres
+Cst Em Estética E Cosmética	Semipresencial	Tecnólogo	Saúde	4 semestres
+Cst Em Gerontologia	Semipresencial	Tecnólogo	Saúde	6 semestres
+Cst Em Gestão Ambiental	Semipresencial	Tecnólogo	Agrárias	6 semestres
+Cst Em Gestão De Recursos Humanos	Semipresencial	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Gestão Hospitalar	Semipresencial	Tecnólogo	Saúde	6 semestres
+Cst Em Logística	Semipresencial	Tecnólogo	Gestão e Negócios	4 semestres
+Cst Em Podologia	Semipresencial	Tecnólogo	Saúde	4 semestres
+Cst Em Radiologia	Semipresencial	Tecnólogo	Saúde	6 semestres
+Cst Em Terapias Integrativas E Complementares	Semipresencial	Tecnólogo	Saúde	4 semestres
+Educação Especial	Semipresencial	Licenciatura	Educação	8 semestres
+Educação Física (Área Básica De Ingresso)	Semipresencial	Bach/Licen	Educação	8 semestres
+Educação Física	Semipresencial	Bacharelado	Educação	8 semestres
+Educação Física 2.0	Semipresencial	Bacharelado 2.0	Educação	4 semestres
+Educação Física	Semipresencial	Licenciatura	Educação	8 semestres
+Engenharia Ambiental	Semipresencial	Bacharelado	Engenharias	10 semestres
+Engenharia Ambiental 2.0	Semipresencial	Bacharelado 2.0	Engenharias	6 semestres
+Engenharia Civil	Semipresencial	Bacharelado	Engenharias	10 semestres
+Engenharia De Computação	Semipresencial	Bacharelado	Tecnologia	10 semestres
+Engenharia De Produção	Semipresencial	Bacharelado	Engenharias	10 semestres
+Engenharia De Produção 2.0	Semipresencial	Bacharelado 2.0	Engenharias	6 semestres
+Engenharia Elétrica	Semipresencial	Bacharelado	Engenharias	10 semestres
+Engenharia Mecânica	Semipresencial	Bacharelado	Engenharias	10 semestres
+Engenharia Mecatrônica	Semipresencial	Bacharelado	Engenharias	10 semestres
+Farmácia	Semipresencial	Bacharelado	Saúde	8 semestres
+Filosofia	Semipresencial	Licenciatura	Educação	6 semestres
+Física	Semipresencial	Bacharelado	Educação	8 semestres
+Física	Semipresencial	Licenciatura	Educação	8 semestres
+Fisioterapia	Semipresencial	Bacharelado	Saúde	8 semestres
+Fonoaudiologia	Semipresencial	Bacharelado	Saúde	8 semestres
+Geografia	Semipresencial	Licenciatura	Educação	6 semestres
+História	Semipresencial	Licenciatura	Educação	6 semestres
+Letras - Libras	Semipresencial	Licenciatura	Educação	8 semestres
+Letras - Português E Espanhol	Semipresencial	Licenciatura	Educação	8 semestres
+Letras - Português E Inglês	Semipresencial	Licenciatura	Educação	8 semestres
+Letras - Português E Japonês	Semipresencial	Licenciatura	Educação	8 semestres
+Matemática	Semipresencial	Bacharelado	Educação	8 semestres
+Matemática	Semipresencial	Licenciatura	Educação	8 semestres
+Naturologia	Semipresencial	Bacharelado	Saúde	6 semestres
+Nutrição	Semipresencial	Bacharelado	Saúde	8 semestres
+Óptica E Optometria	Semipresencial	Bacharelado	Saúde	6 semestres
+Pedagogia	Semipresencial	Licenciatura	Educação	8 semestres
+Psicopedagogia	Semipresencial	Bacharelado	Saúde	6 semestres
+Química	Semipresencial	Bacharelado	Educação	8 semestres
+Química	Semipresencial	Licenciatura	Educação	8 semestres
+Serviço Social	Semipresencial	Bacharelado	Ciências Sociais	8 semestres
+Terapia Ocupacional	Semipresencial	Bacharelado	Saúde	8 semestres
+Zootecnia	Semipresencial	Bacharelado	Agrárias	10 semestres
+Cst Em Análise E Desenvolvimento De Sistemas	Semipresencial	Tecnólogo	Tecnologia	4 semestres
+Formação pedagogica - biologia	Semipresencial	Licenciatura	Educação	2 semestres
+Formação pedagogica - historia	Semipresencial	Licenciatura	Educação	2 semestres
+Formação pedagogica - filosofia	Semipresencial	Licenciatura	Educação	2 semestres
+Formação pedagogica - geografia	Semipresencial	Licenciatura	Educação	2 semestres
+Formação pedagogica - letras port. E ing	Semipresencial	Licenciatura	Educação	2 semestres
+Ciencias biologicas - licenciados	Semipresencial	Licenciatura 2.0	Educação	2 semestres
+Historia - licenciados	Semipresencial	Licenciatura 2.0	Educação	2 semestres
+Ciencias sociais - licenciados	Semipresencial	Licenciatura 2.0	Educação	2 semestres
+Filosofia - Licenciados	Semipresencial	Licenciatura 2.0	Educação	2 semestres
+Geografia - Licenciados	Semipresencial	Licenciatura 2.0	Educação	2 semestres
+Letras portugues e ingles - licenciados	Semipresencial	Licenciatura 2.0	Educação	2 semestres

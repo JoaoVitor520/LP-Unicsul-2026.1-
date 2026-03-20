@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -62,19 +62,52 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
-// --- Default Courses (Fallback) ---
+import { FIXED_COURSES } from './data/courses';
 
-const COURSES: Course[] = [
-  { id: 12, title: 'Fisioterapia', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' },
-  { id: 13, title: 'Nutrição', category: 'Bacharelado', duration: '4 anos', modality: 'Semipresencial', icon: Apple, iconBg: 'bg-lime-500/10', iconColor: 'text-lime-500' },
-  { id: 14, title: 'Pedagogia', category: 'Licenciatura', duration: '4 anos', modality: 'Digital', icon: BookOpen, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500' },
-  { id: 15, title: 'Psicologia', category: 'Bacharelado', duration: '5 anos', modality: 'Semipresencial', icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' },
-  { id: 16, title: 'Sistemas de Informação', category: 'Bacharelado', duration: '4 anos', modality: 'Digital', icon: Code2, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' },
-  { id: 17, title: 'Análise e Desenv. de Sistemas', category: 'Tecnólogo', duration: '2.5 anos', modality: 'Digital', icon: Terminal, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' },
-  { id: 18, title: 'Marketing Digital', category: 'Tecnólogo', duration: '2 anos', modality: 'Digital', icon: Megaphone, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' },
-  { id: 19, title: 'Gestão de RH', category: 'Tecnólogo', duration: '2 anos', modality: 'Digital', icon: Users, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' },
-  { id: 20, title: 'Cibersegurança', category: 'Tecnólogo', duration: '2.5 anos', modality: 'Digital', icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' },
-];
+export const getAreaVisuals = (title: string, area: string) => {
+  const norm = (title + ' ' + area).toLowerCase();
+
+  // Ciências Humanas, Sociais e Mentais
+  if (norm.includes('psicolog') || norm.includes('teórico') || norm.includes('psicanál')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
+  if (norm.includes('política') || norm.includes('rh') || norm.includes('social')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
+  if (norm.includes('art') || norm.includes('visual') || norm.includes('moda') || norm.includes('design') || norm.includes('fotografia')) return { icon: Sparkles, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
+  if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç') || norm.includes('filosofia') || norm.includes('geografia')) return { icon: BookOpen, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+
+  // Financeiro, Negócios e Contabilidade
+  if (norm.includes('contáb') || norm.includes('econôm') || norm.includes('financeir')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
+  if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio') || norm.includes('market') || norm.includes('comércio') || norm.includes('logística')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+
+  // Exatas, Tecnologia e Engenharias
+  if (norm.includes('comp') || norm.includes('sistem') || norm.includes('dado') || norm.includes('soft') || norm.includes('ia ') || norm.includes('internet')) return { icon: Terminal, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
+  if (norm.includes('engenh') || norm.includes('arquit') || norm.includes('urban') || norm.includes('civil') || norm.includes('física') || norm.includes('matemática') || norm.includes('química')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+
+  // Biológicas e Saúde
+  if (norm.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
+  if (norm.includes('biol') || norm.includes('ciência bio')) return { icon: Microscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
+  if (norm.includes('agron') || norm.includes('rural') || norm.includes('ambien') || norm.includes('zootecnia')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
+  if (norm.includes('nutriç') || norm.includes('nferm') || norm.includes('médic') || norm.includes('farm') || norm.includes('saú') || norm.includes('fisioterap') || norm.includes('estética') || norm.includes('fonoaudiologia') || norm.includes('terapia') || norm.includes('podologia')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+
+  // Segurança e outros
+  if (norm.includes('segurança') || norm.includes('criminologia') || norm.includes('penais')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
+
+  // Demais Cursos -> Sorteio dinâmico padronizado com cores originais
+  const icons = [Award, Cpu, Clock, Smartphone, Zap, CheckCircle, Activity, Shield];
+  const colors = [
+    { bg: 'bg-violet-500/10', c: 'text-violet-500' },
+    { bg: 'bg-cyan-500/10', c: 'text-cyan-500' },
+    { bg: 'bg-rose-500/10', c: 'text-rose-500' },
+    { bg: 'bg-lime-500/10', c: 'text-lime-500' },
+    { bg: 'bg-amber-500/10', c: 'text-amber-500' }
+  ];
+  const hash = norm.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+  return { icon: icons[hash % icons.length], iconBg: colors[hash % colors.length].bg, iconColor: colors[hash % colors.length].c };
+};
+
+// --- Default Courses (Fallback) ---
+const INITIAL_COURSES: Course[] = FIXED_COURSES.map((item: any) => ({
+  ...item,
+  ...getAreaVisuals(item.title, item.area)
+}));
 
 const CATEGORIES = ['Todos', 'Bacharelado', 'Bacharelado 2.0', 'Licenciatura', 'Licenciatura 2.0', 'Tecnólogo'];
 
@@ -173,8 +206,37 @@ const Navbar = () => {
   );
 };
 
-const CourseCard: React.FC<{ course: Course, onSelect?: React.MouseEventHandler<HTMLDivElement> }> = ({ course, onSelect }) => {
-  const Icon = course.icon || BookOpen; // Fallback Icon if not present
+// Helper: converte "X semestres" em uma string amigável "X sem. · Y anos"
+const formatDuration = (raw: string) => {
+  if (!raw) return '4 anos';
+  const match = raw.match(/(\d+)/);
+  if (match) {
+    const semesters = parseInt(match[1]);
+    const years = (semesters / 2);
+    const yearsStr = years % 1 === 0 ? `${years}` : `${years.toFixed(1).replace('.', ',')}`;
+    return `${semesters} sem. · ${yearsStr} ${years === 1 ? 'ano' : 'anos'}`;
+  }
+  return raw;
+};
+
+const CourseCard: React.FC<{ course: Course, onSelect?: (course: Course) => void }> = ({ course, onSelect }) => {
+  const Icon = course.icon || BookOpen;
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleCardClick = () => {
+    setShowTooltip(true);
+    // Auto-hide after 3 seconds
+    setTimeout(() => setShowTooltip(false), 3000);
+  };
+
+  const handleArrowClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowTooltip(false);
+    if (onSelect) {
+      onSelect(course);
+    }
+  };
+
   return (
     <motion.div
       layout
@@ -182,17 +244,15 @@ const CourseCard: React.FC<{ course: Course, onSelect?: React.MouseEventHandler<
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       whileHover={{ y: -8 }}
-      onClick={onSelect || (() => document.getElementById('beneficios')?.scrollIntoView({ behavior: 'smooth' }))}
+      onClick={handleCardClick}
       className="group relative bg-[#0e163d] p-7 rounded-[2.5rem] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-xl overflow-hidden cursor-pointer flex flex-col justify-between"
     >
       <div className="relative z-10 flex flex-col h-full">
         <div>
           <div className="flex justify-between items-start mb-6">
-            {/* Box Escura p Icone com a cor respectiva */}
             <div className={`p-4 rounded-2xl ${course.iconBg || 'bg-[#18234e]'} ${course.iconColor || 'text-[#849bf2]'}`}>
               <Icon size={24} />
             </div>
-            {/* Tag Digital/Semipresencial */}
             <span className={`text-[9px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full ${course.modality === 'Digital' ? 'text-[#00e5ff] border border-[#00e5ff]/20 bg-[#00e5ff]/5' : 'text-[#aebef0] border border-[#aebef0]/20 bg-[#aebef0]/5'}`}>
               {course.modality}
             </span>
@@ -208,8 +268,8 @@ const CourseCard: React.FC<{ course: Course, onSelect?: React.MouseEventHandler<
                   Para Formados
                 </span>
               )}
-              <span className="opacity-50 hidden sm:inline">•</span>
-              <span className="w-full sm:w-auto mt-0.5 sm:mt-0">{course.duration}</span>
+              <span className="opacity-50 hidden sm:inline">·</span>
+              <span className="w-full sm:w-auto mt-0.5 sm:mt-0">{formatDuration(course.duration)}</span>
             </p>
             {course.area && <p className="text-[10px] sm:text-[11px] text-[#7a8cc5]/60 mt-0.5">{course.area}</p>}
           </div>
@@ -220,8 +280,26 @@ const CourseCard: React.FC<{ course: Course, onSelect?: React.MouseEventHandler<
             <span className="text-[9px] uppercase tracking-[0.2em] text-[#7a8cc5]/60 font-bold mb-1">Sorteio</span>
             <span className="text-[#e6ff1b] font-extrabold text-xs tracking-tight">BOLSA 85%</span>
           </div>
-          <div className="border border-white/10 p-3 rounded-full hover:bg-white/5 transition-all duration-300 text-[#7a8cc5]">
-            <ArrowRight size={18} className="translate-x-0 transition-transform group-hover:translate-x-1" />
+          <div className="relative">
+            <AnimatePresence>
+              {showTooltip && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.9 }}
+                  className="absolute bottom-full right-0 mb-3 bg-[#e6ff1b] text-[#0e1645] text-[10px] font-extrabold uppercase tracking-wider px-4 py-2 rounded-xl whitespace-nowrap shadow-lg z-50"
+                >
+                  Participe do Sorteio! 🎓
+                  <div className="absolute top-full right-4 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#e6ff1b]"></div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <button
+              onClick={handleArrowClick}
+              className={`border p-3 rounded-full transition-all duration-300 cursor-pointer ${showTooltip ? 'bg-[#e6ff1b]/20 border-[#e6ff1b]/40 text-[#e6ff1b] animate-pulse' : 'border-white/10 text-[#7a8cc5] hover:bg-[#e6ff1b]/10 hover:border-[#e6ff1b]/30 hover:text-[#e6ff1b]'}`}
+            >
+              <ArrowRight size={18} className="translate-x-0 transition-transform group-hover:translate-x-1" />
+            </button>
           </div>
         </div>
       </div>
@@ -309,7 +387,7 @@ const ScrollToTopButton = () => {
 };
 
 export default function App() {
-  const [courses, setCourses] = useState<Course[]>(COURSES); // State that will receive Supabase data
+  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES); // State that will receive Supabase data
   const [searchQuery, setSearchQuery] = useState('');
   const [activeArea, setActiveArea] = useState('Todas');
   const [visibleCount, setVisibleCount] = useState(8);
@@ -328,42 +406,6 @@ export default function App() {
         if (error) throw error;
 
         if (data && data.length > 0) {
-          const getAreaVisuals = (title: string, area: string) => {
-            const norm = (title + ' ' + area).toLowerCase();
-
-            // Ciências Humanas, Sociais e Mentais
-            if (norm.includes('psicolog') || norm.includes('teórico') || norm.includes('psicanál')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
-            if (norm.includes('política') || norm.includes('rh') || norm.includes('social')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
-            if (norm.includes('art') || norm.includes('visual')) return { icon: Sparkles, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
-            if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç')) return { icon: BookOpen, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
-
-            // Financeiro, Negócios e Contabilidade
-            if (norm.includes('contáb') || norm.includes('econôm') || norm.includes('financeir')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
-            if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio') || norm.includes('market')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
-
-            // Exatas, Tecnologia e Engenharias
-            if (norm.includes('comp') || norm.includes('sistem') || norm.includes('dado') || norm.includes('soft')) return { icon: Terminal, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
-            if (norm.includes('engenh') || norm.includes('arquit') || norm.includes('urban') || norm.includes('civil')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
-
-            // Biológicas e  Saúde
-            if (norm.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
-            if (norm.includes('biol') || norm.includes('ciência bio')) return { icon: Microscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
-            if (norm.includes('agron') || norm.includes('rural') || norm.includes('ambien')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
-            if (norm.includes('nutriç') || norm.includes('nferm') || norm.includes('médic') || norm.includes('farm') || norm.includes('saú') || norm.includes('fisioterap')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
-
-            // Demais Cursos -> Sorteio dinâmico padronizado com cores originais
-            const icons = [Award, Cpu, Clock, Smartphone, Zap, CheckCircle, Activity, Shield];
-            const colors = [
-              { bg: 'bg-violet-500/10', c: 'text-violet-500' },
-              { bg: 'bg-cyan-500/10', c: 'text-cyan-500' },
-              { bg: 'bg-rose-500/10', c: 'text-rose-500' },
-              { bg: 'bg-lime-500/10', c: 'text-lime-500' },
-              { bg: 'bg-amber-500/10', c: 'text-amber-500' }
-            ];
-            const hash = norm.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-            return { icon: icons[hash % icons.length], iconBg: colors[hash % colors.length].bg, iconColor: colors[hash % colors.length].c };
-          };
-
           const formattedData = data.map((item: any) => {
             const areaName = item.area || item.area_conhecimento || 'Gerais';
             const courseTitle = item.title || item.nome_curso || item.curso || 'Curso Sem Nome';
@@ -378,14 +420,15 @@ export default function App() {
             };
           });
 
-          // Remove todos os cursos que contenham formacao pedagogica do resultado e seta no Estado
-          const finalFilteredData = formattedData.filter((c: any) => !c.title.toLowerCase().includes('formação pedagógica'));
-          setCourses(finalFilteredData);
+          // Sort alphabetically just in case
+          formattedData.sort((a, b) => a.title.localeCompare(b.title));
+          setCourses(formattedData);
         }
       } catch (err) {
         console.error("Erro ao puxar dados do Supabase:", err);
       }
     };
+
     fetchCoursesFromSupabase();
   }, []);
 
@@ -415,7 +458,6 @@ export default function App() {
         whatsapp: formData.phone,
         curso: formData.course,
         indicacao: showFriendForm && formData.friendName ? 'sim' : 'nao',
-        nome_indicacao: formData.friendName || null,
         amigo_nome: formData.friendName || null,
         amigo_whatsapp: formData.friendPhone || null,
       };
@@ -465,9 +507,9 @@ export default function App() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="max-w-2xl mx-auto text-on-surface-variant text-lg md:text-xl mb-14 leading-relaxed"
+            className="max-w-3xl mx-auto text-on-surface-variant text-lg md:text-xl mb-14 leading-relaxed text-balance"
           >
-            Descubra o curso ideal para você e participe do <span className="text-tertiary font-bold">SORTEIO DE BOLSAS DE ATÉ 85%</span>. Transforme seu potencial em uma carreira de sucesso hoje mesmo.
+            Descubra o curso ideal para você e participe do <span className="text-tertiary font-bold">SORTEIO DE BOLSAS DE <span className="whitespace-nowrap">ATÉ 85%</span></span>. Transforme seu potencial em uma carreira de sucesso hoje mesmo.
           </motion.p>
 
           {/* Search Container */}
@@ -533,7 +575,7 @@ export default function App() {
                 <button
                   key={area as string}
                   onClick={() => { setActiveArea(area as string); setVisibleCount(8); }}
-                  className={`px-7 py-3 rounded-[1rem] font-bold whitespace-nowrap transition-all duration-300 ${activeArea === area ? 'bg-[#cbd6ff] text-[#121c43] shadow-lg shadow-[#cbd6ff]/20' : 'bg-[#18234e] text-[#aebef0] hover:bg-[#1f2b5c]'}`}
+                  className={`px-7 py-3 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 border ${activeArea === area ? 'bg-[#cbd6ff] border-[#cbd6ff] text-[#121c43] shadow-lg shadow-[#cbd6ff]/20 scale-105' : 'bg-[#18234e]/50 border-white/5 text-[#aebef0] hover:bg-[#1f2b5c] hover:border-white/10'}`}
                 >
                   {area as string}
                 </button>
@@ -548,10 +590,9 @@ export default function App() {
                 <CourseCard
                   key={course.id}
                   course={course}
-                  onSelect={(e) => {
-                    e.preventDefault();
+                  onSelect={(selectedCourse) => {
                     // Auto-preenche o select do formulário ativando UX instantânea 
-                    setFormData(prev => ({ ...prev, course: course.title }));
+                    setFormData(prev => ({ ...prev, course: selectedCourse.title }));
                     // Rola fluidamente com margem pro formulário
                     document.getElementById('inscricao')?.scrollIntoView({ behavior: 'smooth' });
                   }}
