@@ -394,7 +394,7 @@ export default function App() {
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [showFriendForm, setShowFriendForm] = useState(false);
 
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
+  const [formData, setFormData] = useState({ name: '', lastName: '', email: '', phone: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
 
   // Fetch Supabase Data
   useEffect(() => {
@@ -454,6 +454,7 @@ export default function App() {
     if (supabase) {
       const leadPayload: Record<string, string | null> = {
         nome: formData.name,
+        sobrenome: formData.lastName,
         email: formData.email,
         whatsapp: formData.phone,
         curso: formData.course,
@@ -764,18 +765,33 @@ export default function App() {
                     onSubmit={handleSubmit}
                     className="space-y-6 relative z-10"
                   >
-                    <div className="space-y-2">
-                      <label htmlFor="studentName" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Nome Completo</label>
-                      <input
-                        id="studentName"
-                        name="studentName"
-                        autoComplete="name"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner"
-                        placeholder="Seu nome aqui"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="studentName" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Nome</label>
+                        <input
+                          id="studentName"
+                          name="studentName"
+                          autoComplete="given-name"
+                          required
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner"
+                          placeholder="Seu nome"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="studentLastName" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Sobrenome</label>
+                        <input
+                          id="studentLastName"
+                          name="studentLastName"
+                          autoComplete="family-name"
+                          required
+                          value={formData.lastName}
+                          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                          className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner"
+                          placeholder="Seu sobrenome"
+                        />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -823,12 +839,12 @@ export default function App() {
                         >
                           <option className="bg-[#121c43] text-white/50" value="" disabled>Escolha seu curso...</option>
 
-                          {/* Renderiza dinamicamente as categorias e cursos */}
-                          {Array.from(new Set(courses.map(c => c.category))).map(category => (
-                            <optgroup key={`main_${category}`} className="bg-[#121c43] text-[#aebef0]" label={category}>
-                              {courses.filter(c => c.category === category).map(course => (
-                                <option key={`main_${course.id}`} value={course.title}>
-                                  {course.title}
+                          {/* Renderiza dinamicamente os cursos agrupados por Área */}
+                          {Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort().map(area => (
+                            <optgroup key={`area_${area}`} className="bg-[#121c43] text-[#aebef0]" label={`── ${area} ──`}>
+                              {courses.filter(c => c.area === area).sort((a, b) => a.title.localeCompare(b.title)).map(course => (
+                                <option key={`course_${course.id}_${course.modality}`} value={course.title}>
+                                  {course.title} ({course.modality})
                                 </option>
                               ))}
                             </optgroup>
