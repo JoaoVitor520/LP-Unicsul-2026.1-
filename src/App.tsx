@@ -47,7 +47,35 @@ import {
   TrendingUp,
   MonitorSmartphone,
   Globe,
-  Dna
+  Dna,
+  Gamepad2,
+  Database,
+  Cloud,
+  Truck,
+  MapPin,
+  Video,
+  Music,
+  Radio,
+  Eye,
+  Mic,
+  Camera,
+  Scissors,
+  Package,
+  Trophy,
+  Settings,
+  Rocket,
+  Handshake,
+  ClipboardList,
+  Calendar,
+  ShoppingBag,
+  MousePointer,
+  UtensilsCrossed,
+  Home,
+  HeartPulse,
+  Wifi,
+  Film,
+  Theater,
+  BookHeart
 } from 'lucide-react';
 
 // --- Types ---
@@ -75,52 +103,223 @@ import { FIXED_COURSES } from './data/courses';
 export const getAreaVisuals = (title: string, area: string) => {
   const norm = (title + ' ' + area).toLowerCase();
 
-  // Direito e Ciências Jurídicas
-  if (norm.includes('direito') || norm.includes('jurídic') || norm.includes('penais') || norm.includes('criminologia')) return { icon: Gavel, iconBg: 'bg-amber-600/10', iconColor: 'text-amber-500' };
+  // ── TECNOLOGIA: específicos primeiro ─────────────────────────
+  // Inteligência Artificial (DEVE vir antes de qualquer check de 'art')
+  if (norm.includes('inteligência artificial')) return { icon: Brain, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-400' };
 
-  // Psicologia e Saúde Mental
-  if (norm.includes('psicolog') || norm.includes('psicanál')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-400' };
+  // Jogos Digitais
+  if (norm.includes('jogos digitais') || norm.includes('jogos')) return { icon: Gamepad2, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-400' };
 
-  // Ciências Sociais, Políticas e RH
-  if (norm.includes('política') || norm.includes('rh') || norm.includes('social') || norm.includes('relações')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
+  // Cibersegurança / Segurança da Informação
+  if (norm.includes('cibersegurança') || norm.includes('segurança da info')) return { icon: Shield, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
 
-  // Artes, Design, Moda e Comunicação
-  if (norm.includes('art') || norm.includes('visual') || norm.includes('moda') || norm.includes('design') || norm.includes('fotografia')) return { icon: Palette, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
-  if (norm.includes('comunic') || norm.includes('publicid') || norm.includes('jornalism') || norm.includes('marketing')) return { icon: Megaphone, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+  // Internet das Coisas (IoT)
+  if (norm.includes('internet das coisas')) return { icon: Wifi, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
 
-  // Educação e Humanidades
-  if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç') || norm.includes('filosofia') || norm.includes('geografia')) return { icon: BookOpen, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' };
+  // Banco de Dados / Ciência de Dados / Análise de Dados
+  if (norm.includes('banco de dados') || norm.includes('ciência de dados') || norm.includes('análise de dados') || norm.includes('alta performance')) return { icon: Database, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-400' };
 
-  // Financeiro, Negócios e Contabilidade
-  if (norm.includes('contáb') || norm.includes('econôm') || norm.includes('financeir') || norm.includes('atuária')) return { icon: TrendingUp, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-400' };
-  if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio') || norm.includes('comércio') || norm.includes('logística') || norm.includes('supply')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+  // Computação em Nuvem
+  if (norm.includes('nuvem')) return { icon: Cloud, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-400' };
 
-  // Tecnologia e Computação
-  if (norm.includes('comp') || norm.includes('sistem') || norm.includes('dado') || norm.includes('soft') || norm.includes('ia ') || norm.includes('inteligência') || norm.includes('internet') || norm.includes('segurança da info') || norm.includes('redes')) return { icon: MonitorSmartphone, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-400' };
+  // Desenvolvimento de Software / Coding
+  if (norm.includes('desenvolvim') || norm.includes('coding') || norm.includes('full stack') || norm.includes('back-end') || norm.includes('mobile')) return { icon: Code2, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
 
-  // Engenharias e Arquitetura
-  if (norm.includes('engenh') || norm.includes('arquit') || norm.includes('urban') || norm.includes('civil') || norm.includes('física') || norm.includes('matemática') || norm.includes('química')) return { icon: Building2, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-400' };
+  // Redes de Computadores / Sistemas para Internet / Sistemas de Informação
+  if (norm.includes('redes de comp') || norm.includes('sistemas para internet') || norm.includes('sistemas de informação') || norm.includes('análise e desenvolvim')) return { icon: MonitorSmartphone, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-400' };
 
-  // Biomedicina e Ciências Biológicas
+  // Gestão da Tecnologia da Informação
+  if (norm.includes('tecnologia da informação') || norm.includes('gestão da tec')) return { icon: MonitorSmartphone, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-400' };
+
+  // Ciência da Computação / Engenharia de Computação / Engenharia de Software
+  if (norm.includes('ciência da computação') || norm.includes('engenharia de computação') || norm.includes('engenharia de software')) return { icon: Terminal, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+
+  // ── SEGURANÇA (todas as modalidades) ─────────────────────────
+  if (norm.includes('segurança')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-400' };
+
+  // ── SAÚDE: específicos ────────────────────────────────────────
+  // Estética e Cosmética
+  if (norm.includes('estética') || norm.includes('cosmética')) return { icon: Sparkles, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-400' };
+
+  // Radiologia
+  if (norm.includes('radiologia')) return { icon: Zap, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // Podologia
+  if (norm.includes('podologia')) return { icon: HeartPulse, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Gerontologia
+  if (norm.includes('geronto')) return { icon: Heart, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Terapias Integrativas / Naturologia
+  if (norm.includes('terapia') || norm.includes('naturolog') || norm.includes('integrativas')) return { icon: Leaf, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+
+  // Biomedicina
+  if (norm.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-400' };
+
+  // Farmácia
+  if (norm.includes('farmácia') || norm.includes('farmacia')) return { icon: FlaskConical, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // Nutrição
+  if (norm.includes('nutriç')) return { icon: Apple, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+
+  // Óptica e Optometria
+  if (norm.includes('óptica') || norm.includes('optom')) return { icon: Eye, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // Fonoaudiologia
+  if (norm.includes('fonoaudiologia')) return { icon: Mic, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Fisioterapia
+  if (norm.includes('fisioterap')) return { icon: Activity, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Gestão Hospitalar
+  if (norm.includes('hospitalar')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Gestão da Saúde Pública
+  if (norm.includes('saúde pública')) return { icon: HeartPulse, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Psicologia / Psicopedagogia / Psicanálise
+  if (norm.includes('psicolog') || norm.includes('psicanál') || norm.includes('psicopedag') || norm.includes('teóricos psicanalíticos')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-400' };
+
+  // Saúde geral
+  if (norm.includes('saú') || norm.includes('enferm') || norm.includes('médic')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // ── COMUNICAÇÃO E DESIGN: específicos ────────────────────────
+  // Influenciador Digital
+  if (norm.includes('influenciador')) return { icon: Smartphone, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Marketing Digital
+  if (norm.includes('marketing digital')) return { icon: BarChart3, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Marketing
+  if (norm.includes('marketing')) return { icon: Megaphone, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Produção Audiovisual
+  if (norm.includes('audiovisual')) return { icon: Video, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Produção Cultural
+  if (norm.includes('produção cultural')) return { icon: Theater, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Produção Midiática
+  if (norm.includes('midiática')) return { icon: Radio, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Fotografia
+  if (norm.includes('fotografia')) return { icon: Camera, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Design de Animação
+  if (norm.includes('animação')) return { icon: Film, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Design de Experiência (UX/UI)
+  if (norm.includes('design de experiência') || norm.includes('experiência do usuário')) return { icon: MousePointer, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Design de Interiores
+  if (norm.includes('interiores')) return { icon: Home, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' };
+
+  // Design de Moda
+  if (norm.includes('moda')) return { icon: Scissors, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-400' };
+
+  // Design Gráfico
+  if (norm.includes('design gráfico')) return { icon: Palette, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Design de Produto
+  if (norm.includes('design de produto')) return { icon: Package, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
+
+  // Artes Visuais / Design (genérico)
+  if (norm.includes('artes visuais') || norm.includes('design')) return { icon: Palette, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+
+  // Publicidade / Jornalismo / Relações Públicas
+  if (norm.includes('publicid') || norm.includes('jornalism') || norm.includes('relações públicas')) return { icon: Megaphone, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // ── NEGÓCIOS E GESTÃO: específicos ───────────────────────────
+  // Gestão Financeira / Contabilidade / Economia
+  if (norm.includes('financeir') || norm.includes('contáb') || norm.includes('econôm') || norm.includes('atuária')) return { icon: TrendingUp, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-400' };
+
+  // Gastronomia
+  if (norm.includes('gastronomia') || norm.includes('hospitalidade')) return { icon: UtensilsCrossed, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' };
+
+  // Turismo
+  if (norm.includes('turismo')) return { icon: MapPin, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // Negócios Imobiliários
+  if (norm.includes('imobiliário') || norm.includes('imobiliarios')) return { icon: Building2, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
+
+  // Logística
+  if (norm.includes('logística') || norm.includes('supply')) return { icon: Truck, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // Recursos Humanos
+  if (norm.includes('recursos humanos')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
+
+  // Coaching e Mentoring
+  if (norm.includes('coaching') || norm.includes('mentor')) return { icon: Lightbulb, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-400' };
+
+  // Comércio Exterior / Relações Internacionais
+  if (norm.includes('comércio exterior') || norm.includes('relações internac') || norm.includes('internacional')) return { icon: Globe, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // Empreendedorismo
+  if (norm.includes('empreend') || norm.includes('startup')) return { icon: Rocket, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-400' };
+
+  // Eventos
+  if (norm.includes('eventos')) return { icon: Calendar, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
+
+  // Secretariado
+  if (norm.includes('secretariado')) return { icon: ClipboardList, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // Gestão de Cooperativas
+  if (norm.includes('cooperativas')) return { icon: Handshake, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-400' };
+
+  // Terceiro Setor / Serviço Social
+  if (norm.includes('terceiro setor') || norm.includes('serviço social')) return { icon: Heart, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-400' };
+
+  // Gestão Desportiva / Lazer / Educação Física
+  if (norm.includes('desportiv') || norm.includes('lazer') || norm.includes('educação física')) return { icon: Trophy, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-400' };
+
+  // Gestão Comercial
+  if (norm.includes('gestão comercial') || norm.includes('comércio')) return { icon: ShoppingBag, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // Gestão Ambiental
+  if (norm.includes('gestão ambiental') || norm.includes('ambien')) return { icon: Leaf, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+
+  // Gestão da Produção Industrial
+  if (norm.includes('produção industrial')) return { icon: Settings, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // Gestão da Qualidade
+  if (norm.includes('qualidade')) return { icon: CheckCircle, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-400' };
+
+  // Processos Gerenciais
+  if (norm.includes('processos gerenciais')) return { icon: BarChart3, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // Conciliação / Mediação / Arbitragem
+  if (norm.includes('conciliação') || norm.includes('mediação') || norm.includes('arbitr')) return { icon: Scale, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-400' };
+
+  // Perícia Judicial
+  if (norm.includes('perícia')) return { icon: Microscope, iconBg: 'bg-amber-600/10', iconColor: 'text-amber-500' };
+
+  // Gestão Pública / Administração Pública
+  if (norm.includes('gestão pública') || norm.includes('administração pública')) return { icon: Landmark, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
+
+  // ── DIREITO E CIÊNCIAS JURÍDICAS ─────────────────────────────
+  if (norm.includes('direito') || norm.includes('jurídic') || norm.includes('notariais')) return { icon: Gavel, iconBg: 'bg-amber-600/10', iconColor: 'text-amber-500' };
+  if (norm.includes('criminologia') || norm.includes('penais')) return { icon: Gavel, iconBg: 'bg-amber-600/10', iconColor: 'text-amber-500' };
+
+  // ── EDUCAÇÃO ─────────────────────────────────────────────────
+  if (norm.includes('teologia')) return { icon: BookHeart, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' };
+  if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç') || norm.includes('filosofia') || norm.includes('geografia') || norm.includes('humanidades')) return { icon: BookOpen, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' };
+  if (norm.includes('matemática') || norm.includes('física') || norm.includes('química')) return { icon: FlaskConical, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // ── CIÊNCIAS BIOLÓGICAS ───────────────────────────────────────
   if (norm.includes('biomedicina') || norm.includes('biol') || norm.includes('genética')) return { icon: Dna, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-400' };
 
-  // Ciências Agrárias e Meio Ambiente
-  if (norm.includes('agron') || norm.includes('rural') || norm.includes('ambien') || norm.includes('zootecnia') || norm.includes('florestal')) return { icon: Leaf, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+  // ── CIÊNCIAS AGRÁRIAS E MEIO AMBIENTE ────────────────────────
+  if (norm.includes('agroneg') || norm.includes('agron') || norm.includes('rural') || norm.includes('zootecnia') || norm.includes('florestal')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
 
-  // Saúde e Ciências da Saúde
-  if (norm.includes('nutriç') || norm.includes('enferm') || norm.includes('médic') || norm.includes('farm') || norm.includes('saú') || norm.includes('fisioterap') || norm.includes('estética') || norm.includes('fonoaudiologia') || norm.includes('terapia') || norm.includes('podologia')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+  // ── ENGENHARIAS E ARQUITETURA ─────────────────────────────────
+  if (norm.includes('mecatrôn') || norm.includes('elétric') || norm.includes('mecânic')) return { icon: Settings, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-400' };
+  if (norm.includes('engenh') || norm.includes('arquitet') || norm.includes('urban') || norm.includes('civil')) return { icon: Building2, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-400' };
 
-  // Farmácia e Química
-  if (norm.includes('químic') || norm.includes('farmácia') || norm.includes('laborat')) return { icon: FlaskConical, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+  // ── CIÊNCIAS SOCIAIS ──────────────────────────────────────────
+  if (norm.includes('social') || norm.includes('política') || norm.includes('relações')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
 
-  // Segurança Pública
-  if (norm.includes('segurança') && !norm.includes('info')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-400' };
-
-  // Internacional / Relações Exteriores
-  if (norm.includes('internacional') || norm.includes('exterior') || norm.includes('turismo') || norm.includes('idioma')) return { icon: Globe, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
-
-  // Inovação e Tecnologia Geral
-  if (norm.includes('inovaç') || norm.includes('empreend') || norm.includes('startup')) return { icon: Lightbulb, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-400' };
+  // ── GESTÃO GERAL (fallback Gestão e Negócios) ─────────────────
+  if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
 
   // Fallback dinâmico
   const icons = [Award, Zap, Activity, GraduationCap, Sparkles, Globe, Lightbulb, Cpu];
