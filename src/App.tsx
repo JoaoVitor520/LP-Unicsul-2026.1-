@@ -131,7 +131,15 @@ import {
   Tv,
   Compass,
   Sigma,
-  Atom
+  Atom,
+  Construction,
+  Beef,
+  Mic2,
+  GitMerge,
+  Presentation,
+  HandHeart,
+  Puzzle,
+  HandHelping
 } from 'lucide-react';
 
 // --- Types ---
@@ -146,6 +154,7 @@ interface Course {
   icon?: React.ElementType; // Usado para fallback
   iconBg?: string;
   iconColor?: string;
+  flagEmoji?: string; // Bandeira do país para cursos de Letras
 }
 
 // --- Supabase Config ---
@@ -180,7 +189,7 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('tecnologia da informação'))    return { icon: Monitor,       iconBg: 'bg-sky-500/10',     iconColor: 'text-sky-400' };    // tela
   if (t.includes('ciência da computação'))       return { icon: Cpu,           iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-400' }; // chip
   if (t.includes('engenharia de computação'))    return { icon: Binary,        iconBg: 'bg-violet-600/10',  iconColor: 'text-violet-300' }; // binário
-  if (t.includes('engenharia de software'))      return { icon: PenTool,       iconBg: 'bg-green-600/10',   iconColor: 'text-green-300' };  // caneta/código
+  if (t.includes('engenharia de software'))      return { icon: GitMerge,      iconBg: 'bg-green-600/10',   iconColor: 'text-green-300' };  // merge = conexão de código
 
   // ── SEGURANÇA ────────────────────────────────────────────────
   if (t.includes('segurança privada'))           return { icon: Siren,         iconBg: 'bg-red-500/10',     iconColor: 'text-red-400' };    // sirene
@@ -214,8 +223,8 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('marketing digital'))           return { icon: TrendingUp,    iconBg: 'bg-rose-600/10',    iconColor: 'text-rose-300' };   // crescimento digital
   if (t.includes('marketing'))                   return { icon: Megaphone,     iconBg: 'bg-rose-500/10',    iconColor: 'text-rose-400' };   // megafone
   if (t.includes('publicidade'))                 return { icon: Star,          iconBg: 'bg-amber-500/10',   iconColor: 'text-amber-400' };  // estrela/destaque
-  if (t.includes('jornalismo'))                  return { icon: Newspaper,     iconBg: 'bg-slate-500/10',   iconColor: 'text-slate-400' };  // jornal
-  if (t.includes('relações públicas'))           return { icon: UserCheck,     iconBg: 'bg-rose-500/10',    iconColor: 'text-rose-400' };   // pessoa aprovada
+  if (t.includes('jornalismo'))                  return { icon: Mic2,          iconBg: 'bg-slate-500/10',   iconColor: 'text-slate-400' };  // microfone de repórter
+  if (t.includes('relações públicas'))           return { icon: Presentation,  iconBg: 'bg-rose-500/10',    iconColor: 'text-rose-400' };   // apresentação/coletiva
   if (t.includes('produção audiovisual'))        return { icon: Clapperboard,  iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' }; // claquete
   if (t.includes('produção cultural'))           return { icon: Theater,       iconBg: 'bg-purple-500/10',  iconColor: 'text-purple-400' }; // máscaras teatro
   if (t.includes('produção midiática'))          return { icon: Tv,            iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' }; // televisão
@@ -252,7 +261,8 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('produção industrial'))         return { icon: Factory,       iconBg: 'bg-slate-500/10',   iconColor: 'text-slate-400' };  // fábrica
   if (t.includes('gestão da qualidade'))         return { icon: CheckCircle,   iconBg: 'bg-teal-500/10',    iconColor: 'text-teal-400' };   // check qualidade
   if (t.includes('processos gerenciais'))        return { icon: Cog,           iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400' };   // engrenagem processo
-  if (t.includes('serviço social'))              return { icon: Accessibility, iconBg: 'bg-pink-500/10',    iconColor: 'text-pink-400' };   // acessibilidade/social
+  if (t.includes('terapia ocupacional'))         return { icon: Puzzle,        iconBg: 'bg-teal-500/10',    iconColor: 'text-teal-400' };   // atividades/reabilitação
+  if (t.includes('serviço social'))              return { icon: HandHeart,     iconBg: 'bg-pink-500/10',    iconColor: 'text-pink-400' };   // mão+coração = assistência social
   if (t.includes('gestão pública') || t.includes('administração pública')) return { icon: Vote, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' }; // voto/civismo
 
   // ── DIREITO E CIÊNCIAS JURÍDICAS ─────────────────────────────
@@ -266,21 +276,31 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('agronomia'))                   return { icon: Wheat,         iconBg: 'bg-yellow-500/10',  iconColor: 'text-yellow-400' }; // trigo/grão
   if (t.includes('gestão do agronegócio'))       return { icon: Tractor,       iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // trator
   if (t.includes('engenharia ambiental'))        return { icon: TreePine,      iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };  // pinheiro/natureza
-  if (t.includes('zootecnia') || t.includes('florestal') || t.includes('rural')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+  if (t.includes('zootecnia'))                   return { icon: Beef,          iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // bovino = zootecnia
+  if (t.includes('florestal') || t.includes('rural')) return { icon: Sprout,  iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };
 
   // ── ENGENHARIAS ───────────────────────────────────────────────
   if (t.includes('engenharia elétrica'))         return { icon: Zap,           iconBg: 'bg-yellow-500/10',  iconColor: 'text-yellow-400' }; // raio elétrico
   if (t.includes('engenharia mecânica'))         return { icon: Wrench,        iconBg: 'bg-slate-500/10',   iconColor: 'text-slate-400' };  // chave inglesa
   if (t.includes('mecatrônica'))                 return { icon: Cog,           iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-400' }; // engrenagem
   if (t.includes('engenharia de produção'))      return { icon: Factory,       iconBg: 'bg-violet-600/10',  iconColor: 'text-violet-300' }; // fábrica
-  if (t.includes('engenharia civil'))            return { icon: Compass,       iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-400' }; // compasso projeto
+  if (t.includes('engenharia civil'))            return { icon: Construction,  iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-400' }; // obra/construção
   if (t.includes('arquitetura e urbanismo'))     return { icon: Ruler,         iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-400' }; // régua/projeto
   if (t.includes('engenh'))                      return { icon: Wrench,        iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-400' }; // fallback engenharias
 
   // ── EDUCAÇÃO ─────────────────────────────────────────────────
   if (t.includes('teologia'))                    return { icon: BookHeart,     iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro com coração
   if (t.includes('pedagogia') || t.includes('educação especial')) return { icon: GraduationCap, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' }; // capelo
-  if (t.includes('letras'))                      return { icon: Pen,           iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // caneta/escrita
+  // Letras — bandeira do idioma
+  if (t.includes('letras') && t.includes('libras'))    return { icon: Hand,     iconBg: 'bg-green-600/10',   iconColor: 'text-green-300',   flagEmoji: '🇧🇷' };
+  if (t.includes('letras') && t.includes('japonês'))   return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🇯🇵' };
+  if (t.includes('letras') && t.includes('inglês'))    return { icon: BookOpen, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400',    flagEmoji: '🇬🇧' };
+  if (t.includes('letras') && t.includes('espanhol'))  return { icon: BookOpen, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300',     flagEmoji: '🇪🇸' };
+  if (t.includes('letras') && t.includes('francês'))   return { icon: BookOpen, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400',  flagEmoji: '🇫🇷' };
+  if (t.includes('letras') && t.includes('alemão'))    return { icon: BookOpen, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300',  flagEmoji: '🇩🇪' };
+  if (t.includes('letras') && t.includes('italiano'))  return { icon: BookOpen, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400',   flagEmoji: '🇮🇹' };
+  if (t.includes('letras') && t.includes('chinês'))    return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🇨🇳' };
+  if (t.includes('letras'))                             return { icon: Pen,      iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400',  flagEmoji: '🇧🇷' }; // português = Brasil
   if (t.includes('história'))                    return { icon: BookOpen,      iconBg: 'bg-amber-500/10',   iconColor: 'text-amber-400' };  // livro aberto
   if (t.includes('filosofia'))                   return { icon: BookMarked,    iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro marcado
   if (t.includes('geografia'))                   return { icon: MapPin,        iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // pino de mapa
@@ -466,7 +486,10 @@ const CourseCard: React.FC<{ course: Course, onSelect?: (course: Course) => void
         <div className="flex justify-between items-start">
           <div className={`relative p-3.5 rounded-2xl ${course.iconBg || 'bg-[#18234e]'} shadow-lg`}>
             <div className={`absolute inset-0 rounded-2xl opacity-30 blur-md ${course.iconBg || 'bg-blue-500/10'}`}></div>
-            <Icon size={22} className={`relative z-10 ${course.iconColor || 'text-[#849bf2]'}`} strokeWidth={1.75} />
+            {course.flagEmoji
+              ? <span className="relative z-10 text-xl leading-none select-none" role="img" aria-label="bandeira">{course.flagEmoji}</span>
+              : <Icon size={22} className={`relative z-10 ${course.iconColor || 'text-[#849bf2]'}`} strokeWidth={1.75} />
+            }
           </div>
           <span className={`text-[9px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-full flex items-center gap-1.5 ${
             isDigital
@@ -676,9 +699,45 @@ export default function App() {
       .replace(/(\d{4,5})(\d{4})\d+?$/, '$1-$2');
   };
 
+  // Fuzzy search: tolera erros de digitação e acentuação
+  const normalize = (s: string) =>
+    s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  const levenshtein = (a: string, b: string): number => {
+    if (a.length === 0) return b.length;
+    if (b.length === 0) return a.length;
+    const dp: number[][] = Array.from({ length: a.length + 1 }, (_, i) =>
+      Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+    );
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        dp[i][j] = a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+      }
+    }
+    return dp[a.length][b.length];
+  };
+
+  const fuzzyMatch = (query: string, text: string): boolean => {
+    if (!query.trim()) return true;
+    const nq = normalize(query);
+    const nt = normalize(text);
+    if (nt.includes(nq)) return true;
+    // Verifica cada palavra da busca contra cada palavra do título
+    const queryWords = nq.split(/\s+/).filter(Boolean);
+    const titleWords = nt.split(/\s+/).filter(Boolean);
+    return queryWords.every(qw => {
+      if (nt.includes(qw)) return true;
+      // Tolerância: até 2 erros para palavras com 5+ letras, 1 erro para 4 letras
+      const maxDist = qw.length >= 5 ? 2 : qw.length >= 4 ? 1 : 0;
+      return titleWords.some(tw => levenshtein(qw, tw) <= maxDist || tw.includes(qw));
+    });
+  };
+
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
-      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = fuzzyMatch(searchQuery, course.title);
       const matchesArea = activeArea === 'Todas' || course.area === activeArea;
       return matchesSearch && matchesArea;
     });
