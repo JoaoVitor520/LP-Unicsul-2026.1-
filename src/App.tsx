@@ -294,14 +294,14 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('pedagogia') || t.includes('educação especial')) return { icon: GraduationCap, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' }; // capelo
   // Letras — bandeira do idioma
   if (t.includes('letras') && t.includes('libras'))    return { icon: Hand,     iconBg: 'bg-teal-600/10',    iconColor: 'text-teal-300',    flagEmoji: '🤟' }; // gesto de libras
-  if (t.includes('letras') && t.includes('japonês'))   return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🇯🇵' };
-  if (t.includes('letras') && t.includes('inglês'))    return { icon: BookOpen, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400',    flagEmoji: '🇬🇧' };
-  if (t.includes('letras') && t.includes('espanhol'))  return { icon: BookOpen, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300',     flagEmoji: '🇪🇸' };
-  if (t.includes('letras') && t.includes('francês'))   return { icon: BookOpen, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400',  flagEmoji: '🇫🇷' };
-  if (t.includes('letras') && t.includes('alemão'))    return { icon: BookOpen, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300',  flagEmoji: '🇩🇪' };
-  if (t.includes('letras') && t.includes('italiano'))  return { icon: BookOpen, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400',   flagEmoji: '🇮🇹' };
-  if (t.includes('letras') && t.includes('chinês'))    return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🇨🇳' };
-  if (t.includes('letras'))                             return { icon: BookOpen, iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400',  flagEmoji: '📖' }; // livro aberto = leitura/escrita
+  if (t.includes('letras') && t.includes('japonês'))   return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🌸' }; // cerejeira = Japão
+  if (t.includes('letras') && t.includes('inglês'))    return { icon: BookOpen, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400',    flagEmoji: '📜' }; // pergaminho = literatura inglesa
+  if (t.includes('letras') && t.includes('espanhol'))  return { icon: BookOpen, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300',     flagEmoji: '🌹' }; // rosa = cultura hispânica
+  if (t.includes('letras') && t.includes('francês'))   return { icon: BookOpen, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400',  flagEmoji: '⚜️' }; // flor de lis = França
+  if (t.includes('letras') && t.includes('alemão'))    return { icon: BookOpen, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300',  flagEmoji: '🏰' }; // castelo = cultura alemã
+  if (t.includes('letras') && t.includes('italiano'))  return { icon: BookOpen, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400',   flagEmoji: '🎭' }; // máscaras = teatro italiano
+  if (t.includes('letras') && t.includes('chinês'))    return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🐉' }; // dragão = cultura chinesa
+  if (t.includes('letras'))                             return { icon: BookOpen, iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400',  flagEmoji: '📖' }; // livro aberto
   if (t.includes('história'))                    return { icon: BookOpen,      iconBg: 'bg-amber-500/10',   iconColor: 'text-amber-400' };  // livro aberto
   if (t.includes('filosofia'))                   return { icon: BookMarked,    iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro marcado
   if (t.includes('geografia'))                   return { icon: MapPin,        iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // pino de mapa
