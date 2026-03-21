@@ -39,7 +39,15 @@ import {
   Brain,
   Code2,
   Megaphone,
-  BarChart3
+  BarChart3,
+  FlaskConical,
+  Gavel,
+  Leaf,
+  Lightbulb,
+  TrendingUp,
+  MonitorSmartphone,
+  Globe,
+  Dna
 } from 'lucide-react';
 
 // --- Types ---
@@ -67,37 +75,62 @@ import { FIXED_COURSES } from './data/courses';
 export const getAreaVisuals = (title: string, area: string) => {
   const norm = (title + ' ' + area).toLowerCase();
 
-  // Ciências Humanas, Sociais e Mentais
-  if (norm.includes('psicolog') || norm.includes('teórico') || norm.includes('psicanál')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-500' };
-  if (norm.includes('política') || norm.includes('rh') || norm.includes('social')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-500' };
-  if (norm.includes('art') || norm.includes('visual') || norm.includes('moda') || norm.includes('design') || norm.includes('fotografia')) return { icon: Sparkles, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-500' };
-  if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç') || norm.includes('filosofia') || norm.includes('geografia')) return { icon: BookOpen, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500' };
+  // Direito e Ciências Jurídicas
+  if (norm.includes('direito') || norm.includes('jurídic') || norm.includes('penais') || norm.includes('criminologia')) return { icon: Gavel, iconBg: 'bg-amber-600/10', iconColor: 'text-amber-500' };
+
+  // Psicologia e Saúde Mental
+  if (norm.includes('psicolog') || norm.includes('psicanál')) return { icon: Brain, iconBg: 'bg-pink-500/10', iconColor: 'text-pink-400' };
+
+  // Ciências Sociais, Políticas e RH
+  if (norm.includes('política') || norm.includes('rh') || norm.includes('social') || norm.includes('relações')) return { icon: Users, iconBg: 'bg-indigo-500/10', iconColor: 'text-indigo-400' };
+
+  // Artes, Design, Moda e Comunicação
+  if (norm.includes('art') || norm.includes('visual') || norm.includes('moda') || norm.includes('design') || norm.includes('fotografia')) return { icon: Palette, iconBg: 'bg-fuchsia-500/10', iconColor: 'text-fuchsia-400' };
+  if (norm.includes('comunic') || norm.includes('publicid') || norm.includes('jornalism') || norm.includes('marketing')) return { icon: Megaphone, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Educação e Humanidades
+  if (norm.includes('pedagog') || norm.includes('letras') || norm.includes('histór') || norm.includes('educaç') || norm.includes('filosofia') || norm.includes('geografia')) return { icon: BookOpen, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' };
 
   // Financeiro, Negócios e Contabilidade
-  if (norm.includes('contáb') || norm.includes('econôm') || norm.includes('financeir')) return { icon: BarChart3, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500' };
-  if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio') || norm.includes('market') || norm.includes('comércio') || norm.includes('logística')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-500' };
+  if (norm.includes('contáb') || norm.includes('econôm') || norm.includes('financeir') || norm.includes('atuária')) return { icon: TrendingUp, iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-400' };
+  if (norm.includes('administra') || norm.includes('gestão') || norm.includes('negócio') || norm.includes('comércio') || norm.includes('logística') || norm.includes('supply')) return { icon: Briefcase, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' };
 
-  // Exatas, Tecnologia e Engenharias
-  if (norm.includes('comp') || norm.includes('sistem') || norm.includes('dado') || norm.includes('soft') || norm.includes('ia ') || norm.includes('internet')) return { icon: Terminal, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-500' };
-  if (norm.includes('engenh') || norm.includes('arquit') || norm.includes('urban') || norm.includes('civil') || norm.includes('física') || norm.includes('matemática') || norm.includes('química')) return { icon: Building2, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500' };
+  // Tecnologia e Computação
+  if (norm.includes('comp') || norm.includes('sistem') || norm.includes('dado') || norm.includes('soft') || norm.includes('ia ') || norm.includes('inteligência') || norm.includes('internet') || norm.includes('segurança da info') || norm.includes('redes')) return { icon: MonitorSmartphone, iconBg: 'bg-sky-500/10', iconColor: 'text-sky-400' };
 
-  // Biológicas e Saúde
-  if (norm.includes('biomedicina')) return { icon: Microscope, iconBg: 'bg-purple-500/10', iconColor: 'text-purple-500' };
-  if (norm.includes('biol') || norm.includes('ciência bio')) return { icon: Microscope, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-500' };
-  if (norm.includes('agron') || norm.includes('rural') || norm.includes('ambien') || norm.includes('zootecnia')) return { icon: Sprout, iconBg: 'bg-green-500/10', iconColor: 'text-green-500' };
-  if (norm.includes('nutriç') || norm.includes('nferm') || norm.includes('médic') || norm.includes('farm') || norm.includes('saú') || norm.includes('fisioterap') || norm.includes('estética') || norm.includes('fonoaudiologia') || norm.includes('terapia') || norm.includes('podologia')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-500' };
+  // Engenharias e Arquitetura
+  if (norm.includes('engenh') || norm.includes('arquit') || norm.includes('urban') || norm.includes('civil') || norm.includes('física') || norm.includes('matemática') || norm.includes('química')) return { icon: Building2, iconBg: 'bg-violet-500/10', iconColor: 'text-violet-400' };
 
-  // Segurança e outros
-  if (norm.includes('segurança') || norm.includes('criminologia') || norm.includes('penais')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-500' };
+  // Biomedicina e Ciências Biológicas
+  if (norm.includes('biomedicina') || norm.includes('biol') || norm.includes('genética')) return { icon: Dna, iconBg: 'bg-teal-500/10', iconColor: 'text-teal-400' };
 
-  // Demais Cursos -> Sorteio dinâmico padronizado com cores originais
-  const icons = [Award, Cpu, Clock, Smartphone, Zap, CheckCircle, Activity, Shield];
+  // Ciências Agrárias e Meio Ambiente
+  if (norm.includes('agron') || norm.includes('rural') || norm.includes('ambien') || norm.includes('zootecnia') || norm.includes('florestal')) return { icon: Leaf, iconBg: 'bg-green-500/10', iconColor: 'text-green-400' };
+
+  // Saúde e Ciências da Saúde
+  if (norm.includes('nutriç') || norm.includes('enferm') || norm.includes('médic') || norm.includes('farm') || norm.includes('saú') || norm.includes('fisioterap') || norm.includes('estética') || norm.includes('fonoaudiologia') || norm.includes('terapia') || norm.includes('podologia')) return { icon: Stethoscope, iconBg: 'bg-rose-500/10', iconColor: 'text-rose-400' };
+
+  // Farmácia e Química
+  if (norm.includes('químic') || norm.includes('farmácia') || norm.includes('laborat')) return { icon: FlaskConical, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // Segurança Pública
+  if (norm.includes('segurança') && !norm.includes('info')) return { icon: Shield, iconBg: 'bg-red-500/10', iconColor: 'text-red-400' };
+
+  // Internacional / Relações Exteriores
+  if (norm.includes('internacional') || norm.includes('exterior') || norm.includes('turismo') || norm.includes('idioma')) return { icon: Globe, iconBg: 'bg-cyan-500/10', iconColor: 'text-cyan-400' };
+
+  // Inovação e Tecnologia Geral
+  if (norm.includes('inovaç') || norm.includes('empreend') || norm.includes('startup')) return { icon: Lightbulb, iconBg: 'bg-yellow-500/10', iconColor: 'text-yellow-400' };
+
+  // Fallback dinâmico
+  const icons = [Award, Zap, Activity, GraduationCap, Sparkles, Globe, Lightbulb, Cpu];
   const colors = [
-    { bg: 'bg-violet-500/10', c: 'text-violet-500' },
-    { bg: 'bg-cyan-500/10', c: 'text-cyan-500' },
-    { bg: 'bg-rose-500/10', c: 'text-rose-500' },
-    { bg: 'bg-lime-500/10', c: 'text-lime-500' },
-    { bg: 'bg-amber-500/10', c: 'text-amber-500' }
+    { bg: 'bg-violet-500/10', c: 'text-violet-400' },
+    { bg: 'bg-cyan-500/10', c: 'text-cyan-400' },
+    { bg: 'bg-rose-500/10', c: 'text-rose-400' },
+    { bg: 'bg-lime-500/10', c: 'text-lime-400' },
+    { bg: 'bg-amber-500/10', c: 'text-amber-400' },
+    { bg: 'bg-sky-500/10', c: 'text-sky-400' },
   ];
   const hash = norm.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
   return { icon: icons[hash % icons.length], iconBg: colors[hash % colors.length].bg, iconColor: colors[hash % colors.length].c };
@@ -225,7 +258,6 @@ const CourseCard: React.FC<{ course: Course, onSelect?: (course: Course) => void
 
   const handleCardClick = () => {
     setShowTooltip(true);
-    // Auto-hide after 3 seconds
     setTimeout(() => setShowTooltip(false), 3000);
   };
 
@@ -237,68 +269,98 @@ const CourseCard: React.FC<{ course: Course, onSelect?: (course: Course) => void
     }
   };
 
+  // Extract a base color from iconColor for the glow effect
+  const glowColor = course.iconColor?.replace('text-', '') || 'blue-500';
+  const isDigital = course.modality === 'Digital';
+
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 20, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -6, transition: { duration: 0.25 } }}
       onClick={handleCardClick}
-      className="group relative bg-[#0e163d] p-7 rounded-[2.5rem] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-xl overflow-hidden cursor-pointer flex flex-col justify-between"
+      className="card-shine group relative bg-gradient-to-b from-[#111a3e] to-[#0a1028] p-6 rounded-3xl border border-white/[0.07] hover:border-white/[0.15] transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)] overflow-hidden cursor-pointer flex flex-col"
     >
-      <div className="relative z-10 flex flex-col h-full">
-        <div>
-          <div className="flex justify-between items-start mb-6">
-            <div className={`p-4 rounded-2xl ${course.iconBg || 'bg-[#18234e]'} ${course.iconColor || 'text-[#849bf2]'}`}>
-              <Icon size={24} />
-            </div>
-            <span className={`text-[9px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full ${course.modality === 'Digital' ? 'text-[#00e5ff] border border-[#00e5ff]/20 bg-[#00e5ff]/5' : 'text-[#aebef0] border border-[#aebef0]/20 bg-[#aebef0]/5'}`}>
-              {course.modality}
-            </span>
-          </div>
+      {/* Subtle top glow line */}
+      <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
 
-          <h3 className="font-headline font-bold text-xl mb-4 text-white leading-tight min-h-[50px] flex items-center">{course.title}</h3>
-
-          <div className="flex flex-col gap-1.5 mb-8">
-            <p className="text-[11px] sm:text-xs text-[#7a8cc5] font-medium flex items-center flex-wrap gap-x-2 gap-y-1.5 leading-relaxed">
-              <span>{course.category}</span>
-              {course.category.includes('2.0') && (
-                <span className="bg-[#cbd6ff]/10 text-[#cbd6ff] border border-[#cbd6ff]/20 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest shrink-0">
-                  Para Formados
-                </span>
-              )}
-              <span className="opacity-50 hidden sm:inline">·</span>
-              <span className="w-full sm:w-auto mt-0.5 sm:mt-0">{formatDuration(course.duration)}</span>
-            </p>
-            {course.area && <p className="text-[10px] sm:text-[11px] text-[#7a8cc5]/60 mt-0.5">{course.area}</p>}
+      <div className="relative z-10 flex flex-col h-full gap-5">
+        {/* Header: Icon + Modality Badge */}
+        <div className="flex justify-between items-start">
+          <div className={`relative p-3.5 rounded-2xl ${course.iconBg || 'bg-[#18234e]'} shadow-lg`}>
+            <div className={`absolute inset-0 rounded-2xl opacity-30 blur-md ${course.iconBg || 'bg-blue-500/10'}`}></div>
+            <Icon size={22} className={`relative z-10 ${course.iconColor || 'text-[#849bf2]'}`} strokeWidth={1.75} />
           </div>
+          <span className={`text-[9px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-full flex items-center gap-1.5 ${
+            isDigital
+              ? 'text-[#00e5ff] border border-[#00e5ff]/25 bg-[#00e5ff]/[0.07]'
+              : 'text-[#c4b5fd] border border-[#c4b5fd]/25 bg-[#c4b5fd]/[0.07]'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isDigital ? 'bg-[#00e5ff] badge-digital' : 'bg-[#c4b5fd]'}`}></span>
+            {course.modality}
+          </span>
         </div>
 
-        <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-auto">
-          <div className="flex flex-col">
-            <span className="text-[9px] uppercase tracking-[0.2em] text-[#7a8cc5]/60 font-bold mb-1">Sorteio</span>
-            <span className="text-[#e6ff1b] font-extrabold text-xs tracking-tight">BOLSA 85%</span>
+        {/* Course Title */}
+        <div>
+          <h3 className="font-headline font-bold text-[1.05rem] text-white leading-snug group-hover:text-[#e0e8ff] transition-colors duration-200 min-h-[2.8rem] flex items-center">
+            {course.title}
+          </h3>
+        </div>
+
+        {/* Meta Info */}
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+            <span className="text-[11px] text-[#6b7fc0] font-semibold">{course.category}</span>
+            {course.category.includes('2.0') && (
+              <span className="bg-[#cbd6ff]/10 text-[#cbd6ff] border border-[#cbd6ff]/20 text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest">
+                Para Formados
+              </span>
+            )}
+            <span className="text-[#3a4a7a] text-[11px]">·</span>
+            <span className="text-[11px] text-[#6b7fc0] font-semibold">{formatDuration(course.duration)}</span>
           </div>
+          {course.area && (
+            <span className="text-[10px] text-[#4a5a8a] font-medium">{course.area}</span>
+          )}
+        </div>
+
+        {/* Bottom: Scholarship + CTA */}
+        <div className="mt-auto pt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[8.5px] uppercase tracking-[0.18em] text-[#4a5a8a] font-bold">Sorteio de bolsa</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-[10px] text-[#a0b0e0] font-semibold">até</span>
+              <span className="text-[#e6ff1b] font-black text-sm tracking-tight drop-shadow-[0_0_8px_rgba(230,255,27,0.4)]">85%</span>
+            </div>
+          </div>
+
           <div className="relative">
             <AnimatePresence>
               {showTooltip && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.9 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.88 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.9 }}
-                  className="absolute bottom-full right-0 mb-3 bg-[#e6ff1b] text-[#0e1645] text-[10px] font-extrabold uppercase tracking-wider px-4 py-2 rounded-xl whitespace-nowrap shadow-lg z-50"
+                  exit={{ opacity: 0, y: 8, scale: 0.88 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  className="absolute bottom-full right-0 mb-3 bg-[#e6ff1b] text-[#0e1645] text-[9.5px] font-black uppercase tracking-wider px-3.5 py-2 rounded-xl whitespace-nowrap shadow-[0_4px_20px_rgba(230,255,27,0.35)] z-50"
                 >
                   Participe do Sorteio! 🎓
-                  <div className="absolute top-full right-4 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#e6ff1b]"></div>
+                  <div className="absolute top-full right-4 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#e6ff1b]"></div>
                 </motion.div>
               )}
             </AnimatePresence>
             <button
               onClick={handleArrowClick}
-              className={`border p-3 rounded-full transition-all duration-300 cursor-pointer ${showTooltip ? 'bg-[#e6ff1b]/20 border-[#e6ff1b]/40 text-[#e6ff1b] animate-pulse' : 'border-white/10 text-[#7a8cc5] hover:bg-[#e6ff1b]/10 hover:border-[#e6ff1b]/30 hover:text-[#e6ff1b]'}`}
+              className={`group/btn flex items-center justify-center w-10 h-10 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                showTooltip
+                  ? 'bg-[#e6ff1b]/20 border-[#e6ff1b]/50 text-[#e6ff1b]'
+                  : 'border-white/[0.08] text-[#5a6fa0] hover:bg-[#e6ff1b]/10 hover:border-[#e6ff1b]/30 hover:text-[#e6ff1b] bg-white/[0.03]'
+              }`}
             >
-              <ArrowRight size={18} className="translate-x-0 transition-transform group-hover:translate-x-1" />
+              <ArrowRight size={16} className="transition-transform duration-200 group-hover/btn:translate-x-0.5" />
             </button>
           </div>
         </div>
@@ -562,21 +624,59 @@ export default function App() {
       </section>
 
       {/* Catalog Section */}
-      <section id="cursos" className="py-24 px-6 bg-surface-container-low/30 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
-            <div>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-3 text-white">Explore por Área</h2>
-              <p className="text-[#aebef0] text-lg">São centenas de opções para você decolar.</p>
-            </div>
+      <section id="cursos" className="py-24 px-6 relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(184,195,255,0.04)_0%,_transparent_60%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(1,236,208,0.03)_0%,_transparent_60%)] pointer-events-none"></div>
 
-            {/* Categories Tabs */}
-            <div className="flex flex-wrap pb-4 lg:pb-0 gap-2 sm:gap-3 overflow-visible px-1">
-              {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean)].map(area => (
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Section Header */}
+          <div className="mb-14">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-col lg:flex-row lg:items-end justify-between gap-8"
+            >
+              <div>
+                <div className="inline-flex items-center gap-2 mb-4 bg-[#111a3e] border border-white/[0.07] rounded-full px-4 py-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#01ecd0] animate-pulse"></span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#6b8fff]">{courses.length}+ cursos disponíveis</span>
+                </div>
+                <h2 className="font-headline text-4xl md:text-5xl font-extrabold text-white leading-tight">
+                  Explore por <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#b8c3ff] to-[#01ecd0]">Área</span>
+                </h2>
+                <p className="text-[#5a6fa0] text-base mt-3 font-medium">Centenas de opções para você decolar — digital ou semipresencial.</p>
+              </div>
+
+              {/* Stats strip */}
+              <div className="flex gap-5 shrink-0">
+                {[
+                  { value: '152', label: 'Cursos' },
+                  { value: '8', label: 'Áreas' },
+                  { value: '85%', label: 'Bolsa máx.' },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center bg-[#111a3e] border border-white/[0.07] rounded-2xl px-5 py-3">
+                    <div className="font-headline font-black text-xl text-white">{stat.value}</div>
+                    <div className="text-[10px] text-[#4a5a8a] uppercase tracking-widest font-bold mt-0.5">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Area Filter Tabs */}
+          <div className="mb-10 overflow-x-auto scrollbar-hide -mx-6 px-6">
+            <div className="flex gap-2 pb-1 min-w-max">
+              {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort()].map(area => (
                 <button
                   key={area as string}
                   onClick={() => { setActiveArea(area as string); setVisibleCount(8); }}
-                  className={`px-7 py-3 rounded-full font-bold text-sm whitespace-nowrap transition-all duration-300 border ${activeArea === area ? 'bg-[#cbd6ff] border-[#cbd6ff] text-[#121c43] shadow-lg shadow-[#cbd6ff]/20 scale-105' : 'bg-[#18234e]/50 border-white/5 text-[#aebef0] hover:bg-[#1f2b5c] hover:border-white/10'}`}
+                  className={`px-5 py-2.5 rounded-2xl font-bold text-xs whitespace-nowrap transition-all duration-200 border ${
+                    activeArea === area
+                      ? 'bg-gradient-to-r from-[#b8c3ff] to-[#a0b4ff] border-transparent text-[#070f2e] shadow-[0_4px_16px_rgba(184,195,255,0.25)]'
+                      : 'bg-[#0c1530]/60 border-white/[0.06] text-[#6b7fc0] hover:bg-[#141f45] hover:text-[#aebef0] hover:border-white/10'
+                  }`}
                 >
                   {area as string}
                 </button>
@@ -584,17 +684,26 @@ export default function App() {
             </div>
           </div>
 
-          {/* Bento Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {/* Course Count for filtered state */}
+          {activeArea !== 'Todas' && (
+            <motion.p
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-[11px] text-[#4a5a8a] font-bold uppercase tracking-widest mb-8"
+            >
+              {filteredCourses.length} curso{filteredCourses.length !== 1 ? 's' : ''} em <span className="text-[#b8c3ff]">{activeArea}</span>
+            </motion.p>
+          )}
+
+          {/* Course Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             <AnimatePresence mode="popLayout">
-              {filteredCourses.slice(0, visibleCount).map(course => (
+              {filteredCourses.slice(0, visibleCount).map((course, i) => (
                 <CourseCard
                   key={course.id}
                   course={course}
                   onSelect={(selectedCourse) => {
-                    // Auto-preenche o select do formulário ativando UX instantânea 
                     setFormData(prev => ({ ...prev, course: selectedCourse.title }));
-                    // Rola fluidamente com margem pro formulário
                     document.getElementById('inscricao')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 />
@@ -604,19 +713,33 @@ export default function App() {
 
           {visibleCount < filteredCourses.length && (
             <div className="flex justify-center mt-12 w-full">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setVisibleCount(prev => prev + 12)}
-                className="px-10 py-4 rounded-full border border-white/10 text-[#aebef0] font-bold hover:bg-[#18234e] hover:text-white transition-all active:scale-95"
+                className="group flex items-center gap-2.5 px-8 py-3.5 rounded-2xl border border-white/[0.1] bg-[#0c1530]/60 text-[#8a9ed4] font-bold text-sm hover:bg-[#141f45] hover:text-white hover:border-white/20 transition-all"
               >
                 Ver mais cursos
-              </button>
+                <ChevronDown size={15} className="group-hover:translate-y-0.5 transition-transform" />
+              </motion.button>
             </div>
           )}
 
           {filteredCourses.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-on-surface-variant text-lg">Nenhum curso encontrado para sua busca.</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-24"
+            >
+              <Search size={36} className="text-[#2a3560] mx-auto mb-4" />
+              <p className="text-[#4a5a8a] font-semibold text-base">Nenhum curso encontrado.</p>
+              <button
+                onClick={() => { setSearchQuery(''); setActiveArea('Todas'); }}
+                className="mt-4 text-[#b8c3ff] text-sm font-bold underline underline-offset-2 hover:text-white transition-colors"
+              >
+                Limpar filtros
+              </button>
+            </motion.div>
           )}
         </div>
       </section>
