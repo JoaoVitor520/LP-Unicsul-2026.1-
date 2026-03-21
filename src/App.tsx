@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -277,7 +277,7 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('agronomia'))                   return { icon: Wheat,         iconBg: 'bg-yellow-500/10',  iconColor: 'text-yellow-400' }; // trigo/grão
   if (t.includes('gestão do agronegócio'))       return { icon: Tractor,       iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // trator
   if (t.includes('engenharia ambiental'))        return { icon: TreePine,      iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };  // pinheiro/natureza
-  if (t.includes('zootecnia'))                   return { icon: Beef,          iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // bovino = zootecnia
+  if (t.includes('zootecnia'))                   return { icon: Beef,          iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300', flagEmoji: '🐄' }; // vaca = zootecnia
   if (t.includes('florestal') || t.includes('rural')) return { icon: Sprout,  iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };
 
   // ── ENGENHARIAS ───────────────────────────────────────────────
@@ -293,15 +293,15 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('teologia'))                    return { icon: BookHeart,     iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro com coração
   if (t.includes('pedagogia') || t.includes('educação especial')) return { icon: GraduationCap, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' }; // capelo
   // Letras — bandeira do idioma
-  if (t.includes('letras') && t.includes('libras'))    return { icon: Hand,     iconBg: 'bg-green-600/10',   iconColor: 'text-green-300',   flagEmoji: '🇧🇷' };
-  if (t.includes('letras') && t.includes('japonês'))   return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🇯🇵' };
-  if (t.includes('letras') && t.includes('inglês'))    return { icon: BookOpen, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400',    flagEmoji: '🇬🇧' };
-  if (t.includes('letras') && t.includes('espanhol'))  return { icon: BookOpen, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300',     flagEmoji: '🇪🇸' };
-  if (t.includes('letras') && t.includes('francês'))   return { icon: BookOpen, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400',  flagEmoji: '🇫🇷' };
-  if (t.includes('letras') && t.includes('alemão'))    return { icon: BookOpen, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300',  flagEmoji: '🇩🇪' };
-  if (t.includes('letras') && t.includes('italiano'))  return { icon: BookOpen, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400',   flagEmoji: '🇮🇹' };
-  if (t.includes('letras') && t.includes('chinês'))    return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🇨🇳' };
-  if (t.includes('letras'))                             return { icon: Pen,      iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400',  flagEmoji: '🇧🇷' }; // português = Brasil
+  if (t.includes('letras') && t.includes('libras'))    return { icon: Hand,     iconBg: 'bg-teal-600/10',    iconColor: 'text-teal-300',    flagEmoji: '🤟' }; // gesto de libras
+  if (t.includes('letras') && t.includes('japonês'))   return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🌸' }; // cerejeira = Japão
+  if (t.includes('letras') && t.includes('inglês'))    return { icon: BookOpen, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400',    flagEmoji: '📜' }; // pergaminho = literatura inglesa
+  if (t.includes('letras') && t.includes('espanhol'))  return { icon: BookOpen, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300',     flagEmoji: '🌹' }; // rosa = cultura hispânica
+  if (t.includes('letras') && t.includes('francês'))   return { icon: BookOpen, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400',  flagEmoji: '⚜️' }; // flor de lis = França
+  if (t.includes('letras') && t.includes('alemão'))    return { icon: BookOpen, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300',  flagEmoji: '🏰' }; // castelo = cultura alemã
+  if (t.includes('letras') && t.includes('italiano'))  return { icon: BookOpen, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400',   flagEmoji: '🎭' }; // máscaras = teatro italiano
+  if (t.includes('letras') && t.includes('chinês'))    return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🐉' }; // dragão = cultura chinesa
+  if (t.includes('letras'))                             return { icon: BookOpen, iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400',  flagEmoji: '📖' }; // livro aberto
   if (t.includes('história'))                    return { icon: BookOpen,      iconBg: 'bg-amber-500/10',   iconColor: 'text-amber-400' };  // livro aberto
   if (t.includes('filosofia'))                   return { icon: BookMarked,    iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro marcado
   if (t.includes('geografia'))                   return { icon: MapPin,        iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // pino de mapa
@@ -333,10 +333,12 @@ export const getAreaVisuals = (title: string, _area: string) => {
 };
 
 // --- Default Courses (Fallback) ---
-const INITIAL_COURSES: Course[] = FIXED_COURSES.map((item: any) => ({
-  ...item,
-  ...getAreaVisuals(item.title, item.area)
-}));
+const INITIAL_COURSES: Course[] = FIXED_COURSES
+  .filter((item: any) => !item.title.toLowerCase().includes('formação pedagog') && !item.title.toLowerCase().includes('formacao pedagog'))
+  .map((item: any) => ({
+    ...item,
+    ...getAreaVisuals(item.title, item.area)
+  }));
 
 const CATEGORIES = ['Todos', 'Bacharelado', 'Bacharelado 2.0', 'Licenciatura', 'Licenciatura 2.0', 'Tecnólogo'];
 
@@ -648,12 +650,14 @@ const ScrollToTopButton = () => {
 };
 
 export default function App() {
-  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES); // State that will receive Supabase data
+  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeArea, setActiveArea] = useState('Todas');
   const [visibleCount, setVisibleCount] = useState(8);
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [showFriendForm, setShowFriendForm] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({ name: '', lastName: '', email: '', phone: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
 
@@ -720,29 +724,44 @@ export default function App() {
     return dp[a.length][b.length];
   };
 
-  const fuzzyMatch = (query: string, text: string): boolean => {
+  const fuzzyMatch = useCallback((query: string, title: string, area?: string): boolean => {
     if (!query.trim()) return true;
     const nq = normalize(query);
-    const nt = normalize(text);
-    if (nt.includes(nq)) return true;
-    // Verifica cada palavra da busca contra cada palavra do título
+    const targets = [normalize(title), normalize(area || '')];
+    // Busca direta
+    if (targets.some(t => t.includes(nq))) return true;
+    // Busca por palavras com tolerância a erros de digitação
     const queryWords = nq.split(/\s+/).filter(Boolean);
-    const titleWords = nt.split(/\s+/).filter(Boolean);
     return queryWords.every(qw => {
-      if (nt.includes(qw)) return true;
-      // Tolerância: até 2 erros para palavras com 5+ letras, 1 erro para 4 letras
-      const maxDist = qw.length >= 5 ? 2 : qw.length >= 4 ? 1 : 0;
-      return titleWords.some(tw => levenshtein(qw, tw) <= maxDist || tw.includes(qw));
+      if (targets.some(t => t.includes(qw))) return true;
+      // Tolerância: até 2 erros p/ palavras longas, 1 p/ médias
+      const maxDist = qw.length >= 6 ? 2 : qw.length >= 4 ? 1 : 0;
+      const allWords = targets.flatMap(t => t.split(/\s+/).filter(Boolean));
+      return allWords.some(tw => levenshtein(qw, tw) <= maxDist || tw.startsWith(qw));
     });
-  };
+  }, []);
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
-      const matchesSearch = fuzzyMatch(searchQuery, course.title);
+      const t = course.title.toLowerCase();
+      if (t.includes('formação pedagog') || t.includes('formacao pedagog')) return false;
+      const matchesSearch = fuzzyMatch(searchQuery, course.title, course.area);
       const matchesArea = activeArea === 'Todas' || course.area === activeArea;
       return matchesSearch && matchesArea;
     });
-  }, [courses, searchQuery, activeArea]);
+  }, [courses, searchQuery, activeArea, fuzzyMatch]);
+
+  // Sugestões rápidas enquanto o usuário digita (máx 6)
+  const searchSuggestions = useMemo(() => {
+    if (!searchQuery.trim() || searchQuery.length < 2) return [];
+    return courses
+      .filter(c => {
+        const t = c.title.toLowerCase();
+        if (t.includes('formação pedagog') || t.includes('formacao pedagog')) return false;
+        return fuzzyMatch(searchQuery, c.title, c.area);
+      })
+      .slice(0, 6);
+  }, [courses, searchQuery, fuzzyMatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -811,50 +830,91 @@ export default function App() {
           </motion.p>
 
           {/* Search Container */}
-          <motion.form
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' });
-              // A request de "limpe para nova pesquisa" sem quebrar o feedback visual do usuário 
-              // foi implementada como um botão clear ativo e o active section tracker já orientando.
-            }}
-            className="max-w-3xl mx-auto bg-[#0a1236]/90 p-2 sm:p-2.5 rounded-[2rem] sm:rounded-full flex flex-col sm:flex-row items-center shadow-2xl border border-white/10 gap-3 sm:gap-2"
+            className="max-w-3xl mx-auto relative"
           >
-            <div className="flex-1 flex items-center w-full px-4 pt-3 sm:pt-0 pb-1 sm:pb-0 relative">
-              <label htmlFor="searchQuery" className="sr-only">Procurar curso</label>
-              <Search size={22} className="text-[#849bf2] shrink-0" />
-              <input
-                id="searchQuery"
-                name="searchQuery"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Qual curso você está procurando hoje?"
-                className="bg-transparent border-none focus:ring-0 text-[#c7d5fa] w-full px-4 pr-10 placeholder:text-[#6a7fc8] font-medium text-base sm:text-lg outline-none"
-              />
-              <AnimatePresence>
-                {searchQuery && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    type="button"
-                    onClick={() => { setSearchQuery(''); document.querySelector('input')?.focus(); }}
-                    className="absolute right-4 text-[#6a7fc8] hover:text-white transition-colors bg-white/5 p-1 rounded-full backdrop-blur-md"
-                    title="Limpar para nova pesquisa"
-                  >
-                    <X size={16} />
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
-            <button type="submit" className="w-full sm:w-auto bg-[#b6c6ff] text-[#0e1645] px-10 py-4 sm:py-5 rounded-[1.5rem] sm:rounded-full font-bold sm:text-lg hover:brightness-110 transition-all whitespace-nowrap active:scale-95 shadow-[0_4px_20px_rgba(182,198,255,0.2)]">
-              Buscar Agora
-            </button>
-          </motion.form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                searchInputRef.current?.blur();
+                setShowSuggestions(false);
+                setTimeout(() => document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' }), 80);
+              }}
+              className="bg-[#0a1236]/90 p-2 sm:p-2.5 rounded-[2rem] sm:rounded-full flex flex-col sm:flex-row items-center shadow-2xl border border-white/10 gap-3 sm:gap-2"
+            >
+              <div className="flex-1 flex items-center w-full px-4 pt-3 sm:pt-0 pb-1 sm:pb-0 relative">
+                <label htmlFor="searchQuery" className="sr-only">Procurar curso</label>
+                <Search size={22} className="text-[#849bf2] shrink-0" />
+                <input
+                  ref={searchInputRef}
+                  id="searchQuery"
+                  name="searchQuery"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => { setSearchQuery(e.target.value); setShowSuggestions(true); }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                  placeholder="Qual curso você está procurando hoje?"
+                  className="bg-transparent border-none focus:ring-0 text-[#c7d5fa] w-full px-4 pr-10 placeholder:text-[#6a7fc8] font-medium text-base sm:text-lg outline-none"
+                />
+                <AnimatePresence>
+                  {searchQuery && (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      type="button"
+                      onClick={() => { setSearchQuery(''); setShowSuggestions(false); searchInputRef.current?.focus(); }}
+                      className="absolute right-4 text-[#6a7fc8] hover:text-white transition-colors bg-white/5 p-1 rounded-full backdrop-blur-md"
+                      title="Limpar pesquisa"
+                    >
+                      <X size={16} />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
+              <button type="submit" className="w-full sm:w-auto bg-[#b6c6ff] text-[#0e1645] px-10 py-4 sm:py-5 rounded-[1.5rem] sm:rounded-full font-bold sm:text-lg hover:brightness-110 transition-all whitespace-nowrap active:scale-95 shadow-[0_4px_20px_rgba(182,198,255,0.2)]">
+                Buscar Agora
+              </button>
+            </form>
+
+            {/* Suggestions dropdown */}
+            <AnimatePresence>
+              {showSuggestions && searchSuggestions.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-3 bg-[#0d1640]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
+                >
+                  <div className="px-3 py-2 border-b border-white/[0.05]">
+                    <span className="text-[9px] uppercase tracking-widest text-[#4a5a8a] font-bold">Sugestões</span>
+                  </div>
+                  {searchSuggestions.map((course) => (
+                    <button
+                      key={course.id}
+                      type="button"
+                      onMouseDown={() => {
+                        setSearchQuery(course.title);
+                        setShowSuggestions(false);
+                        searchInputRef.current?.blur();
+                        setTimeout(() => document.getElementById('cursos')?.scrollIntoView({ behavior: 'smooth' }), 80);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.05] transition-colors text-left group"
+                    >
+                      <Search size={13} className="text-[#4a5a8a] shrink-0" />
+                      <span className="text-[13px] text-[#c7d5fa] font-medium truncate">{course.title}</span>
+                      <span className="text-[10px] text-[#3a4a7a] ml-auto shrink-0">{course.area}</span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
       </section>
 
