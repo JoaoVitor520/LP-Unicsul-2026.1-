@@ -139,7 +139,8 @@ import {
   Presentation,
   HandHeart,
   Puzzle,
-  HandHelping
+  HandHelping,
+  Hand
 } from 'lucide-react';
 
 // --- Types ---
