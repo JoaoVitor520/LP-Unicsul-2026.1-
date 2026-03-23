@@ -17,6 +17,10 @@ export default defineConfig(({mode}) => {
     },
     build: {
       rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          gestao: path.resolve(__dirname, 'gestao/index.html'),
+        },
         output: {
           manualChunks(id) {
             if (!id.includes('node_modules')) return;

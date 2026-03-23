@@ -193,3 +193,62 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.dashboard-shell {
+  background:
+    radial-gradient(circle at top left, rgba(49, 247, 197, 0.16), transparent 26%),
+    radial-gradient(circle at top right, rgba(142, 182, 255, 0.18), transparent 24%),
+    linear-gradient(180deg, #020d24 0%, #05132f 100%);
+}
+
+.dashboard-panel {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(9, 27, 61, 0.94), rgba(4, 15, 37, 0.96));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-hero {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(49, 247, 197, 0.22), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(216, 248, 95, 0.14), transparent 22%),
+    linear-gradient(145deg, rgba(8, 23, 61, 0.96), rgba(4, 17, 40, 0.94));
+}
+
+.dashboard-filter {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.dashboard-filter > span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(173, 196, 243, 0.78);
+}
+
+.dashboard-select {
+  width: 100%;
+  appearance: none;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #08173d;
+  padding: 0.78rem 1rem;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-select:focus {
+  border-color: rgba(49, 247, 197, 0.35);
+  box-shadow: 0 0 0 3px rgba(49, 247, 197, 0.1);
+}
+
+.dashboard-live-bar {
+  background: linear-gradient(90deg, #31f7c5 0%, #8eb6ff 54%, #d8f85f 100%);
+  box-shadow: 0 0 16px rgba(49, 247, 197, 0.22);
+}
