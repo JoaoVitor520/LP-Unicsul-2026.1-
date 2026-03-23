@@ -961,7 +961,7 @@ export default function App() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="hero-badge-orbit inline-block py-1.5 px-5 rounded-full bg-surface-container-high text-tertiary font-bold text-[10px] uppercase tracking-[0.25em] mb-8"
+            className="inline-block py-1.5 px-5 rounded-full bg-surface-container-high text-tertiary font-bold text-[10px] uppercase tracking-[0.25em] mb-8 border border-tertiary/20"
           >
             Garanta sua vaga no futuro
           </motion.span>
