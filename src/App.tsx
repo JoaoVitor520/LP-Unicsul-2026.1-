@@ -957,7 +957,7 @@ export default function App() {
 
           {/* Area Filter Tabs */}
           <div className="mb-10 overflow-x-auto scrollbar-hide -mx-6 px-6">
-            <div className="flex gap-2.5 pb-1 min-w-max">
+            <div className="flex gap-2.5 pb-1 min-w-max pr-6">
               {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort()].map(area => {
                 const isActive = activeArea === area;
                 const count = area === 'Todas' ? courses.length : courses.filter(c => c.area === area).length;
@@ -967,8 +967,8 @@ export default function App() {
                     onClick={() => { setActiveArea(area as string); setVisibleCount(8); }}
                     className={`group relative px-5 py-2.5 rounded-2xl font-bold text-xs whitespace-nowrap transition-all duration-300 ease-out border ${
                       isActive
-                        ? 'bg-gradient-to-r from-[#b8c3ff] to-[#a0b4ff] border-transparent text-[#070f2e] shadow-[0_4px_20px_rgba(184,195,255,0.3)] scale-[1.03]'
-                        : 'bg-[#0c1530]/60 border-white/[0.06] text-[#6b7fc0] hover:bg-[#141f45] hover:text-[#aebef0] hover:border-white/[0.12] hover:shadow-[0_2px_12px_rgba(107,127,192,0.15)] hover:scale-[1.02] active:scale-[0.98]'
+                        ? 'bg-gradient-to-r from-[#b8c3ff] to-[#a0b4ff] border-transparent text-[#070f2e] shadow-[0_2px_8px_rgba(184,195,255,0.2)] scale-[1.03]'
+                        : 'bg-[#0c1530]/60 border-white/[0.06] text-[#6b7fc0] hover:bg-[#141f45] hover:text-[#aebef0] hover:border-white/[0.12] hover:scale-[1.02] active:scale-[0.98]'
                     }`}
                   >
                     {isActive && (
