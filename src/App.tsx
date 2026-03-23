@@ -140,7 +140,8 @@ import {
   HandHeart,
   Puzzle,
   HandHelping,
-  Hand
+  Hand,
+  MessagesSquare
 } from 'lucide-react';
 
 // --- Types ---
@@ -277,7 +278,7 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('agronomia'))                   return { icon: Wheat,         iconBg: 'bg-yellow-500/10',  iconColor: 'text-yellow-400' }; // trigo/grão
   if (t.includes('gestão do agronegócio'))       return { icon: Tractor,       iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // trator
   if (t.includes('engenharia ambiental'))        return { icon: TreePine,      iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };  // pinheiro/natureza
-  if (t.includes('zootecnia'))                   return { icon: Beef,          iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300', flagEmoji: '🐄' }; // vaca = zootecnia
+  if (t.includes('zootecnia'))                   return { icon: Beef,          iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // vaca = zootecnia
   if (t.includes('florestal') || t.includes('rural')) return { icon: Sprout,  iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };
 
   // ── ENGENHARIAS ───────────────────────────────────────────────
@@ -292,16 +293,16 @@ export const getAreaVisuals = (title: string, _area: string) => {
   // ── EDUCAÇÃO ─────────────────────────────────────────────────
   if (t.includes('teologia'))                    return { icon: BookHeart,     iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro com coração
   if (t.includes('pedagogia') || t.includes('educação especial')) return { icon: GraduationCap, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-400' }; // capelo
-  // Letras — bandeira do idioma
-  if (t.includes('letras') && t.includes('libras'))    return { icon: Hand,     iconBg: 'bg-teal-600/10',    iconColor: 'text-teal-300',    flagEmoji: '🤟' }; // gesto de libras
-  if (t.includes('letras') && t.includes('japonês'))   return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🌸' }; // cerejeira = Japão
-  if (t.includes('letras') && t.includes('inglês'))    return { icon: BookOpen, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400',    flagEmoji: '📜' }; // pergaminho = literatura inglesa
-  if (t.includes('letras') && t.includes('espanhol'))  return { icon: BookOpen, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300',     flagEmoji: '🌹' }; // rosa = cultura hispânica
-  if (t.includes('letras') && t.includes('francês'))   return { icon: BookOpen, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400',  flagEmoji: '⚜️' }; // flor de lis = França
-  if (t.includes('letras') && t.includes('alemão'))    return { icon: BookOpen, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300',  flagEmoji: '🏰' }; // castelo = cultura alemã
-  if (t.includes('letras') && t.includes('italiano'))  return { icon: BookOpen, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400',   flagEmoji: '🎭' }; // máscaras = teatro italiano
-  if (t.includes('letras') && t.includes('chinês'))    return { icon: BookOpen, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400',     flagEmoji: '🐉' }; // dragão = cultura chinesa
-  if (t.includes('letras'))                             return { icon: BookOpen, iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400',  flagEmoji: '📖' }; // livro aberto
+  // Letras — ícone de comunicação (duas pessoas se comunicando)
+  if (t.includes('letras') && t.includes('libras'))    return { icon: Hand,           iconBg: 'bg-teal-600/10',    iconColor: 'text-teal-300' };    // gesto de libras
+  if (t.includes('letras') && t.includes('japonês'))   return { icon: MessagesSquare, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400' };     // comunicação — japonês
+  if (t.includes('letras') && t.includes('inglês'))    return { icon: MessagesSquare, iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400' };    // comunicação — inglês
+  if (t.includes('letras') && t.includes('espanhol'))  return { icon: MessagesSquare, iconBg: 'bg-red-600/10',     iconColor: 'text-red-300' };     // comunicação — espanhol
+  if (t.includes('letras') && t.includes('francês'))   return { icon: MessagesSquare, iconBg: 'bg-indigo-500/10',  iconColor: 'text-indigo-400' };  // comunicação — francês
+  if (t.includes('letras') && t.includes('alemão'))    return { icon: MessagesSquare, iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' };  // comunicação — alemão
+  if (t.includes('letras') && t.includes('italiano'))  return { icon: MessagesSquare, iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };   // comunicação — italiano
+  if (t.includes('letras') && t.includes('chinês'))    return { icon: MessagesSquare, iconBg: 'bg-red-500/10',     iconColor: 'text-red-400' };     // comunicação — chinês
+  if (t.includes('letras'))                             return { icon: MessagesSquare, iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' };  // comunicação — genérico
   if (t.includes('história'))                    return { icon: BookOpen,      iconBg: 'bg-amber-500/10',   iconColor: 'text-amber-400' };  // livro aberto
   if (t.includes('filosofia'))                   return { icon: BookMarked,    iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // livro marcado
   if (t.includes('geografia'))                   return { icon: MapPin,        iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-400' }; // pino de mapa
