@@ -961,7 +961,7 @@ export default function App() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block py-1.5 px-5 rounded-full bg-surface-container-high text-tertiary font-bold text-[10px] uppercase tracking-[0.25em] mb-8 border border-tertiary/20"
+            className="hero-badge-orbit inline-block py-1.5 px-5 rounded-full bg-surface-container-high text-tertiary font-bold text-[10px] uppercase tracking-[0.25em] mb-8"
           >
             Garanta sua vaga no futuro
           </motion.span>
@@ -1476,7 +1476,7 @@ export default function App() {
                                   value={formData.friendName}
                                   onChange={(e) => setFormData({ ...formData, friendName: e.target.value })}
                                   type="text"
-                                  className="w-full bg-[#0a1236]/80 border border-white/5 rounded-xl py-3.5 px-4 focus:ring-1 focus:ring-[#faff5b] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none text-sm"
+                                  className="friend-input w-full bg-[#0a1236]/80 rounded-xl py-3.5 px-4 transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none text-sm"
                                   placeholder="Nome do seu amigo"
                                 />
                               </div>
@@ -1488,7 +1488,7 @@ export default function App() {
                                   value={formData.friendPhone}
                                   onChange={(e) => setFormData({ ...formData, friendPhone: maskPhone(e.target.value) })}
                                   type="tel"
-                                  className="w-full bg-[#0a1236]/80 border border-white/5 rounded-xl py-3.5 px-4 focus:ring-1 focus:ring-[#faff5b] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none text-sm"
+                                  className="friend-input w-full bg-[#0a1236]/80 rounded-xl py-3.5 px-4 transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none text-sm"
                                   placeholder="(00) 00000-0000"
                                   maxLength={15}
                                 />
