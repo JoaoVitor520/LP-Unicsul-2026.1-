@@ -164,6 +164,7 @@ interface Course {
 // Nota: O usuário precisa criar o arquivo .env na raiz (ex: .env) com VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseLeadsTable = (import.meta.env.VITE_SUPABASE_LEADS_TABLE || 'leads').trim();
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 import { FIXED_COURSES } from './data/courses';
@@ -641,12 +642,86 @@ const ScrollToTopButton = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
           onClick={handleScrollUp}
-          className="hidden sm:flex fixed bottom-6 lg:bottom-8 right-6 z-[100] py-2 px-4 sm:py-2.5 sm:px-6 rounded-full bg-white shadow-2xl text-[#121c43] hover:bg-gray-50 transition-all items-center gap-2 text-xs font-bold uppercase tracking-widest border border-black/5"
+          className="hidden sm:flex fixed bottom-28 lg:bottom-32 right-6 z-[100] py-2 px-4 sm:py-2.5 sm:px-6 rounded-full bg-white shadow-2xl text-[#121c43] hover:bg-gray-50 transition-all items-center gap-2 text-xs font-bold uppercase tracking-widest border border-black/5"
         >
           Subir <ChevronDown size={14} className="rotate-180" />
         </motion.button>
       )}
     </AnimatePresence>
+  );
+};
+
+const FloatingWhatsAppButton = () => {
+  const whatsappNumber = '5569992283812';
+  const whatsappLabel = '(69) 99228-3812';
+  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Olá! Quero saber mais sobre as bolsas da Cruzeiro do Sul Virtual.')}`;
+  const [showBubble, setShowBubble] = useState(true);
+
+  useEffect(() => {
+    const collapseTimer = window.setTimeout(() => setShowBubble(false), 3200);
+    const reminderInterval = window.setInterval(() => {
+      setShowBubble(true);
+      window.setTimeout(() => setShowBubble(false), 2600);
+    }, 12000);
+
+    return () => {
+      window.clearTimeout(collapseTimer);
+      window.clearInterval(reminderInterval);
+    };
+  }, []);
+
+  return (
+    <div
+      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] flex items-center"
+      onMouseEnter={() => setShowBubble(true)}
+      onMouseLeave={() => setShowBubble(false)}
+    >
+      <AnimatePresence>
+        {showBubble && (
+          <motion.div
+            initial={{ opacity: 0, x: 18, scale: 0.96 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 18, scale: 0.96 }}
+            transition={{ duration: 0.28, ease: 'easeOut' }}
+            className="pointer-events-none mr-2.5 w-[min(14rem,calc(100vw-5.75rem))] rounded-[1.4rem] border border-[#6dffd1]/20 bg-[linear-gradient(135deg,rgba(7,24,55,0.92),rgba(10,39,72,0.92))] p-1 shadow-[0_18px_50px_-20px_rgba(1,236,208,0.55)] backdrop-blur-2xl"
+          >
+            <div className="rounded-[1.1rem] border border-white/10 bg-white/6 px-3 py-2.5">
+              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[#88f5db]">
+                Atendimento Agora
+              </p>
+              <p className="mt-1 text-sm font-bold leading-tight text-white">
+                Chame no WhatsApp
+              </p>
+              <p className="mt-1 text-[12px] font-semibold tracking-[0.04em] text-[#d8fff5]">
+                {whatsappLabel}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.a
+        href={whatsappHref}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Falar no WhatsApp ${whatsappLabel}`}
+        initial={{ opacity: 0, y: 24, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45, ease: 'easeOut', delay: 0.25 }}
+        onFocus={() => setShowBubble(true)}
+        onBlur={() => setShowBubble(false)}
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-[#6dffd1]/35 bg-[linear-gradient(135deg,#2cf6b4,#00d4aa)] text-[#05223b] shadow-[0_16px_42px_-16px_rgba(44,246,180,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.04]"
+      >
+        <span className="absolute inset-0 rounded-full border border-white/25 opacity-70" />
+        <span className="absolute -inset-1 rounded-full bg-[#2cf6b4]/20 blur-md" />
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="relative h-6 w-6 fill-current">
+          <path d="M19.05 4.94A9.9 9.9 0 0 0 12 2a9.93 9.93 0 0 0-8.6 14.9L2 22l5.25-1.37A9.94 9.94 0 0 0 12 22h.01A10 10 0 0 0 22 12a9.9 9.9 0 0 0-2.95-7.06ZM12 20.13h-.01a8.07 8.07 0 0 1-4.1-1.12l-.3-.18-3.12.82.83-3.05-.2-.32A8.05 8.05 0 1 1 12 20.13Zm4.43-6.02c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.53.12-.16.24-.61.77-.75.93-.14.16-.28.18-.52.06-.24-.12-1-.37-1.9-1.17-.7-.62-1.17-1.39-1.31-1.63-.14-.24-.01-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.53-1.28-.73-1.75-.19-.46-.39-.4-.53-.4h-.45c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.31.98 2.47.12.16 1.68 2.57 4.07 3.6.57.25 1.02.4 1.37.51.58.18 1.1.15 1.52.09.46-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28Z" />
+        </svg>
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-[#05223b]/10 bg-white">
+          <span className="h-2 w-2 rounded-full bg-[#22c55e] animate-pulse" />
+        </span>
+      </motion.a>
+    </div>
   );
 };
 
@@ -656,7 +731,8 @@ export default function App() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeArea, setActiveArea] = useState('Todas');
   const [visibleCount, setVisibleCount] = useState(8);
-  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState('');
   const [showFriendForm, setShowFriendForm] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -699,10 +775,22 @@ export default function App() {
   }, []);
 
   const maskPhone = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{4,5})(\d{4})\d+?$/, '$1-$2');
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+
+    if (digits.length <= 2) return digits;
+
+    const areaCode = digits.slice(0, 2);
+    const phoneNumber = digits.slice(2);
+
+    if (phoneNumber.length <= 4) {
+      return `(${areaCode}) ${phoneNumber}`;
+    }
+
+    if (phoneNumber.length <= 8) {
+      return `(${areaCode}) ${phoneNumber.slice(0, 4)}-${phoneNumber.slice(4)}`;
+    }
+
+    return `(${areaCode}) ${phoneNumber.slice(0, 5)}-${phoneNumber.slice(5)}`;
   };
 
   // Fuzzy search: tolera erros de digitação e acentuação
@@ -758,34 +846,89 @@ export default function App() {
       .slice(0, 6);
   }, [courses, searchQuery, fuzzyMatch]);
 
+  const buildInsertTargets = (tableName: string) => {
+    const normalizedTable = tableName.trim() || 'leads';
+    const hasReferral = showFriendForm && Boolean(formData.friendName.trim());
+    const fullName = [formData.name.trim(), formData.lastName.trim()].filter(Boolean).join(' ');
+
+    if (normalizedTable === 'pistas') {
+      return [{
+        table: normalizedTable,
+        payload: {
+          nome: fullName || formData.name.trim(),
+          'e-mail': formData.email.trim(),
+          WhatsApp: formData.phone,
+          curso: formData.course,
+          'indicação': hasReferral ? 'sim' : 'nao',
+        },
+      }];
+    }
+
+    const leadBasePayload = {
+      email: formData.email.trim(),
+      whatsapp: formData.phone,
+      curso: formData.course,
+      indicacao: hasReferral ? 'sim' : 'nao',
+      amigo_nome: formData.friendName.trim() || null,
+      amigo_whatsapp: formData.friendPhone || null,
+    };
+
+    return [
+      {
+        table: normalizedTable,
+        payload: {
+          nome: formData.name.trim(),
+          sobrenome: formData.lastName.trim() || null,
+          ...leadBasePayload,
+        },
+      },
+      {
+        table: normalizedTable,
+        payload: {
+          nome: fullName || formData.name.trim(),
+          ...leadBasePayload,
+        },
+      },
+    ];
+  };
+
+  const getInsertTargets = () => {
+    const preferredTable = supabaseLeadsTable || 'leads';
+    return [preferredTable, 'leads', 'pistas']
+      .filter((tableName, index, tables) => tables.indexOf(tableName) === index)
+      .flatMap(buildInsertTargets);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus('loading');
+    setFormError('');
 
-    if (supabase) {
-      const leadPayload: Record<string, string | null> = {
-        nome: formData.name,
-        sobrenome: formData.lastName,
-        email: formData.email,
-        whatsapp: formData.phone,
-        curso: formData.course,
-        indicacao: showFriendForm && formData.friendName ? 'sim' : 'nao',
-        amigo_nome: formData.friendName || null,
-        amigo_whatsapp: formData.friendPhone || null,
-      };
-
-      const { error } = await supabase.from('leads').insert([leadPayload]);
-
-      if (error) {
-        console.error("Supabase saving errored or table mismatch:", error);
-        // Fallback p UX para n tela branca caso o dev esteja s banco 
-        setFormStatus('success');
-      } else {
-        setFormStatus('success');
-      }
-    } else {
-      setTimeout(() => setFormStatus('success'), 1500);
+    if (!supabase) {
+      console.error('Supabase not configured. Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY.');
+      setFormStatus('error');
+      setFormError('O Supabase não está configurado neste ambiente. Crie o arquivo .env com VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.');
+      return;
     }
+
+    const insertTargets = getInsertTargets();
+    const insertErrors: string[] = [];
+
+    for (const target of insertTargets) {
+      const { error } = await supabase.from(target.table).insert([target.payload]);
+
+      if (!error) {
+        setFormStatus('success');
+        return;
+      }
+
+      console.error(`Supabase insert failed for table "${target.table}":`, error);
+      insertErrors.push(`${target.table}: ${error.message}`);
+    }
+
+    setFormStatus('error');
+    setFormError('Não foi possível gravar sua inscrição no banco. Verifique a tabela configurada, os nomes das colunas e as políticas de INSERT no Supabase.');
+    console.error('All Supabase insert attempts failed:', insertErrors);
   };
 
   return (
@@ -1340,12 +1483,18 @@ export default function App() {
 
                     <button
                       type="submit"
-                      disabled={formStatus !== 'idle'}
+                      disabled={formStatus === 'loading'}
                       className="w-full bg-[#ebff46] text-[#121c43] mt-4 py-[22px] rounded-[1rem] font-bold text-lg sm:text-xl hover:brightness-110 hover:-translate-y-1 hover:shadow-[0_10px_40px_-5px_rgba(235,255,70,0.6)] active:scale-[0.98] active:translate-y-0 transition-all font-headline tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none shadow-[0_5px_30px_-10px_rgba(235,255,70,0.5)]"
                     >
-                      {formStatus === 'idle' && 'Garantir minha chance'}
-                      {formStatus === 'loading' && 'Processando...'}
+                      {formStatus === 'loading' ? 'Processando...' : 'Garantir minha chance'}
                     </button>
+
+                    {formStatus === 'error' && (
+                      <div className="rounded-[1rem] border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+                        <p className="font-bold uppercase tracking-[0.15em] text-[10px] text-red-200 mb-1">Falha no envio</p>
+                        <p>{formError}</p>
+                      </div>
+                    )}
 
                     <p className="text-center text-[10px] text-[#697bbb] uppercase tracking-widest mt-6">
                       Seus dados estão seguros conosco.
@@ -1373,6 +1522,7 @@ export default function App() {
       </footer>
 
       {/* Remover o Sorteio Ativo Alert Flutuante - Lixeira! */}
+      <FloatingWhatsAppButton />
       <ScrollToTopButton />
     </div>
   );

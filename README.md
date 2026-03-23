@@ -1,20 +1,22 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Landing Page Unicsul
 
-# Run and deploy your AI Studio app
+## Rodando localmente
 
-This contains everything you need to run your app locally.
+Pré-requisito: Node.js
 
-View your app in AI Studio: https://ai.studio/apps/688f1286-38c1-4c25-9814-d4c35d29b542
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
+1. Instale as dependências:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Crie um arquivo `.env` na raiz com base em `.env.example`.
+3. Preencha:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_SUPABASE_LEADS_TABLE` opcionalmente com `pistas`, se essa for a tabela de inscrições do seu projeto
+4. Rode a aplicação:
    `npm run dev`
+
+## Supabase
+
+- O catálogo de cursos é lido de `public.cursos`.
+- O formulário tenta salvar na tabela definida em `VITE_SUPABASE_LEADS_TABLE`.
+- Se a tabela configurada falhar, o app faz fallback entre `leads` e `pistas`.
+- Se sua tabela de inscrições for `pistas`, aplique a policy em `sql/rls_policies_pistas.sql` para permitir `INSERT` com a chave `anon`.

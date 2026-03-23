@@ -26,8 +26,46 @@
 }
 
 @layer base {
+  html {
+    width: 100%;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overscroll-behavior-x: none;
+  }
+
   body {
     @apply bg-background text-on-surface font-body selection:bg-tertiary/30;
+    width: 100%;
+    min-height: 100dvh;
+    overflow-x: clip;
+    overscroll-behavior-y: none;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  summary,
+  label {
+    touch-action: manipulation;
+  }
+
+  @media (max-width: 768px) {
+    input,
+    select,
+    textarea,
+    button {
+      font-size: 16px;
+    }
   }
 }
 
