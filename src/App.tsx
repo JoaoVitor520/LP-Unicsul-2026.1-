@@ -141,7 +141,8 @@ import {
   Puzzle,
   HandHelping,
   Hand,
-  MessagesSquare
+  MessagesSquare,
+  PawPrint
 } from 'lucide-react';
 
 // --- Types ---
@@ -263,7 +264,7 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('produção industrial'))         return { icon: Factory,       iconBg: 'bg-slate-500/10',   iconColor: 'text-slate-400' };  // fábrica
   if (t.includes('gestão da qualidade'))         return { icon: CheckCircle,   iconBg: 'bg-teal-500/10',    iconColor: 'text-teal-400' };   // check qualidade
   if (t.includes('processos gerenciais'))        return { icon: Cog,           iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-400' };   // engrenagem processo
-  if (t.includes('terapia ocupacional'))         return { icon: Puzzle,        iconBg: 'bg-teal-500/10',    iconColor: 'text-teal-400' };   // atividades/reabilitação
+  if (t.includes('terapia ocupacional'))         return { icon: Accessibility,  iconBg: 'bg-teal-500/10',    iconColor: 'text-teal-400' };   // pessoa/reabilitação funcional
   if (t.includes('serviço social'))              return { icon: HandHeart,     iconBg: 'bg-pink-500/10',    iconColor: 'text-pink-400' };   // mão+coração = assistência social
   if (t.includes('gestão pública') || t.includes('administração pública')) return { icon: Vote, iconBg: 'bg-blue-500/10', iconColor: 'text-blue-400' }; // voto/civismo
 
@@ -278,7 +279,7 @@ export const getAreaVisuals = (title: string, _area: string) => {
   if (t.includes('agronomia'))                   return { icon: Wheat,         iconBg: 'bg-yellow-500/10',  iconColor: 'text-yellow-400' }; // trigo/grão
   if (t.includes('gestão do agronegócio'))       return { icon: Tractor,       iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // trator
   if (t.includes('engenharia ambiental'))        return { icon: TreePine,      iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };  // pinheiro/natureza
-  if (t.includes('zootecnia'))                   return { icon: Beef,          iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // vaca = zootecnia
+  if (t.includes('zootecnia'))                   return { icon: PawPrint,      iconBg: 'bg-yellow-600/10',  iconColor: 'text-yellow-300' }; // pegada animal grande = zootecnia
   if (t.includes('florestal') || t.includes('rural')) return { icon: Sprout,  iconBg: 'bg-green-500/10',   iconColor: 'text-green-400' };
 
   // ── ENGENHARIAS ───────────────────────────────────────────────
@@ -335,7 +336,6 @@ export const getAreaVisuals = (title: string, _area: string) => {
 
 // --- Default Courses (Fallback) ---
 const INITIAL_COURSES: Course[] = FIXED_COURSES
-  .filter((item: any) => !item.title.toLowerCase().includes('formação pedagog') && !item.title.toLowerCase().includes('formacao pedagog'))
   .map((item: any) => ({
     ...item,
     ...getAreaVisuals(item.title, item.area)
@@ -745,7 +745,6 @@ export default function App() {
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
       const t = course.title.toLowerCase();
-      if (t.includes('formação pedagog') || t.includes('formacao pedagog')) return false;
       const matchesSearch = fuzzyMatch(searchQuery, course.title, course.area);
       const matchesArea = activeArea === 'Todas' || course.area === activeArea;
       return matchesSearch && matchesArea;
@@ -758,7 +757,6 @@ export default function App() {
     return courses
       .filter(c => {
         const t = c.title.toLowerCase();
-        if (t.includes('formação pedagog') || t.includes('formacao pedagog')) return false;
         return fuzzyMatch(searchQuery, c.title, c.area);
       })
       .slice(0, 6);
