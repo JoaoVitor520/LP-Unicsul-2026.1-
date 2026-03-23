@@ -11,15 +11,20 @@ GRANT SELECT ON public.leads TO authenticated;
 
 DROP POLICY IF EXISTS "dashboard_managers_select_leads" ON public.leads;
 DROP POLICY IF EXISTS "dashboard_select_jvcabral520" ON public.leads;
+DROP POLICY IF EXISTS "dashboard_select_jvcabral520_uid" ON public.leads;
+DROP POLICY IF EXISTS "dashboard_select_jvcabral520_email" ON public.leads;
 
-CREATE POLICY "dashboard_select_jvcabral520"
+CREATE POLICY "dashboard_select_jvcabral520_uid"
   ON public.leads
   FOR SELECT
   TO authenticated
-  USING (
-    lower(COALESCE(auth.jwt() ->> 'email', '')) = 'jvcabral520@gmail.com'
-    OR auth.uid() = '1da13605-adf5-465a-a66a-3986eb978c28'::uuid
-  );
+  USING (auth.uid() = '1da13605-adf5-465a-a66a-3986eb978c28'::uuid);
+
+CREATE POLICY "dashboard_select_jvcabral520_email"
+  ON public.leads
+  FOR SELECT
+  TO authenticated
+  USING (lower(COALESCE(auth.jwt() ->> 'email', '')) = 'jvcabral520@gmail.com');
 
 DROP FUNCTION IF EXISTS public.dashboard_list_leads();
 CREATE FUNCTION public.dashboard_list_leads()
@@ -86,3 +91,4 @@ END $$;
 -- email: jvcabral520@gmail.com
 -- senha: Cruzeiro08
 -- uid esperado: 1da13605-adf5-465a-a66a-3986eb978c28
+-- Depois de aplicar este SQL, saia da conta no dashboard e entre novamente.

@@ -199,10 +199,12 @@
     radial-gradient(circle at top left, rgba(49, 247, 197, 0.16), transparent 26%),
     radial-gradient(circle at top right, rgba(142, 182, 255, 0.18), transparent 24%),
     linear-gradient(180deg, #020d24 0%, #05132f 100%);
+  overflow-x: clip;
 }
 
 .dashboard-panel {
   position: relative;
+  min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
     linear-gradient(180deg, rgba(9, 27, 61, 0.94), rgba(4, 15, 37, 0.96));
@@ -221,6 +223,7 @@
 .dashboard-filter {
   display: grid;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .dashboard-filter > span {
@@ -246,6 +249,12 @@
 .dashboard-select:focus {
   border-color: rgba(49, 247, 197, 0.35);
   box-shadow: 0 0 0 3px rgba(49, 247, 197, 0.1);
+}
+
+@media (max-width: 767px) {
+  .dashboard-filter > span {
+    letter-spacing: 0.16em;
+  }
 }
 
 .dashboard-live-bar {

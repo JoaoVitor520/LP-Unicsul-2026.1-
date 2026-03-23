@@ -99,6 +99,7 @@ export default function DashboardApp() {
   const [dataError, setDataError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [readBlocked, setReadBlocked] = useState(false);
   const deferredSearch = useDeferredValue(search);
 
   const verifyAccess = useCallback((nextSession: Session) => {
@@ -124,15 +125,6 @@ export default function DashboardApp() {
     if (!silent) setIsLoading(true);
     setDataError('');
 
-    const { data: rpcData, error: rpcError } = await supabase.rpc('dashboard_list_leads');
-
-    if (!rpcError) {
-      setLeads((rpcData || []) as Lead[]);
-      setLastUpdated(new Date());
-      setIsLoading(false);
-      return;
-    }
-
     const { data, error } = await supabase
       .from('leads')
       .select('id, nome, email, whatsapp, cidade, curso, indicacao, created_at')
@@ -140,16 +132,19 @@ export default function DashboardApp() {
       .limit(250);
 
     if (error) {
-      const message = `${rpcError.message} ${error.message}`.toLowerCase();
+      const message = `${error.code || ''} ${error.message}`.toLowerCase();
+      const blocked = message.includes('permission denied') || message.includes('42501') || message.includes('403');
+      setReadBlocked(blocked);
       setDataError(
-        message.includes('permission denied') || message.includes('42501')
-          ? 'O dashboard ainda nao tem permissao de leitura. Rode novamente o SQL atualizado de sql/setup_dashboard_manager_access.sql e recarregue a pagina.'
+        blocked
+          ? 'O dashboard ainda nao tem permissao de leitura. Rode novamente o SQL atualizado de sql/setup_dashboard_manager_access.sql, saia da conta e entre de novo.'
           : error.message,
       );
       setIsLoading(false);
       return;
     }
 
+    setReadBlocked(false);
     setLeads((data || []) as Lead[]);
     setLastUpdated(new Date());
     setIsLoading(false);
@@ -196,6 +191,8 @@ export default function DashboardApp() {
 
     fetchLeads();
 
+    if (readBlocked) return;
+
     const intervalId = window.setInterval(() => {
       fetchLeads(true);
     }, LIVE_REFRESH_MS);
@@ -211,7 +208,7 @@ export default function DashboardApp() {
       window.clearInterval(intervalId);
       void supabase.removeChannel(channel);
     };
-  }, [authView, fetchLeads]);
+  }, [authView, fetchLeads, readBlocked]);
 
   const rangeLeads = useMemo(() => leads.filter((lead) => inRange(lead.created_at, range)), [leads, range]);
   const courseOptions = useMemo(
@@ -336,6 +333,7 @@ export default function DashboardApp() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setLeads([]);
+    setReadBlocked(false);
     setAuthView('login');
   };
 
@@ -372,9 +370,11 @@ export default function DashboardApp() {
               </div>
 
               <form className="mx-auto mt-10 max-w-md space-y-5" onSubmit={handleLogin}>
-                <label className="block space-y-2">
+                <label htmlFor="dashboard-login-email" className="block space-y-2">
                   <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8eb6ff]">E-mail</span>
                   <input
+                    id="dashboard-login-email"
+                    name="email"
                     type="email"
                     required
                     autoComplete="email"
@@ -383,9 +383,11 @@ export default function DashboardApp() {
                     className="w-full rounded-[1.1rem] border border-white/10 bg-[#08173d] px-4 py-3.5 text-white outline-none transition focus:border-[#31f7c5]/45 focus:ring-2 focus:ring-[#31f7c5]/15"
                   />
                 </label>
-                <label className="block space-y-2">
+                <label htmlFor="dashboard-login-password" className="block space-y-2">
                   <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8eb6ff]">Senha</span>
                   <input
+                    id="dashboard-login-password"
+                    name="password"
                     type="password"
                     required
                     autoComplete="current-password"
@@ -430,12 +432,12 @@ export default function DashboardApp() {
   }
 
   return (
-    <div className="dashboard-shell min-h-screen px-4 py-4 sm:px-6 lg:px-8">
+    <div className="dashboard-shell min-h-screen px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <motion.header
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="dashboard-panel rounded-[2rem] px-6 py-6 sm:px-8 lg:px-10"
+          className="dashboard-panel rounded-[2rem] px-4 py-5 sm:px-8 sm:py-6 lg:px-10"
         >
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
@@ -443,7 +445,7 @@ export default function DashboardApp() {
                 <LayoutDashboard className="h-4 w-4" />
                 URL do gestor: /gestao/
               </div>
-              <h1 className="font-headline text-3xl font-extrabold leading-tight text-white sm:text-5xl">
+              <h1 className="font-headline text-[2rem] font-extrabold leading-tight text-white sm:text-5xl">
                 Painel de captacao <span className="text-[#31f7c5]">executiva</span>
               </h1>
             </div>
@@ -479,9 +481,9 @@ export default function DashboardApp() {
             ].map((item) => (
               <div key={item.title} className="rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.03] p-5">
                 <div className="flex items-start justify-between">
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/55">{item.title}</p>
-                    <p className="mt-4 font-headline text-4xl font-extrabold text-white">{item.value}</p>
+                    <p className="mt-4 font-headline text-3xl font-extrabold text-white sm:text-4xl">{item.value}</p>
                     <p className="mt-2 text-sm text-white/65">{item.detail}</p>
                   </div>
                   <item.icon className="h-5 w-5 text-white/55" />
@@ -497,12 +499,14 @@ export default function DashboardApp() {
               <div>
                 <h2 className="font-headline text-2xl font-extrabold text-white">Leads</h2>
               </div>
-              <div className="grid gap-3 md:grid-cols-4">
-                <label className="dashboard-filter">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <label htmlFor="dashboard-search" className="dashboard-filter">
                   <span>Busca</span>
                   <div className="relative">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                     <input
+                      id="dashboard-search"
+                      name="search"
                       value={search}
                       onChange={(event) => setSearch(event.target.value)}
                       placeholder="Nome, cidade, curso..."
@@ -510,18 +514,18 @@ export default function DashboardApp() {
                     />
                   </div>
                 </label>
-                <label className="dashboard-filter">
+                <label htmlFor="dashboard-range" className="dashboard-filter">
                   <span>Janela</span>
-                  <select value={range} onChange={(event) => setRange(event.target.value as RangeFilter)} className="dashboard-select">
+                  <select id="dashboard-range" name="range" value={range} onChange={(event) => setRange(event.target.value as RangeFilter)} className="dashboard-select">
                     <option value="24h">Ultimas 24h</option>
                     <option value="7d">Ultimos 7 dias</option>
                     <option value="30d">Ultimos 30 dias</option>
                     <option value="all">Tudo</option>
                   </select>
                 </label>
-                <label className="dashboard-filter">
+                <label htmlFor="dashboard-course" className="dashboard-filter">
                   <span>Curso</span>
-                  <select value={course} onChange={(event) => setCourse(event.target.value)} className="dashboard-select">
+                  <select id="dashboard-course" name="course" value={course} onChange={(event) => setCourse(event.target.value)} className="dashboard-select">
                     {courseOptions.map((option) => (
                       <option key={option} value={option}>
                         {option}
@@ -529,9 +533,9 @@ export default function DashboardApp() {
                     ))}
                   </select>
                 </label>
-                <label className="dashboard-filter">
+                <label htmlFor="dashboard-city" className="dashboard-filter">
                   <span>Cidade</span>
-                  <select value={city} onChange={(event) => setCity(event.target.value)} className="dashboard-select">
+                  <select id="dashboard-city" name="city" value={city} onChange={(event) => setCity(event.target.value)} className="dashboard-select">
                     {cityOptions.map((option) => (
                       <option key={option} value={option}>
                         {option}
@@ -545,7 +549,7 @@ export default function DashboardApp() {
             {dataError && <div className="mt-4 rounded-[1rem] border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">{dataError}</div>}
 
             <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#06142f]/95">
-              <div className="grid grid-cols-[1.2fr_1fr_1fr_0.85fr] gap-4 border-b border-white/6 px-5 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white/45">
+              <div className="hidden grid-cols-[1.2fr_1fr_1fr_0.85fr] gap-4 border-b border-white/6 px-5 py-4 text-[11px] font-bold uppercase tracking-[0.2em] text-white/45 md:grid">
                 <span>Lead</span>
                 <span>Curso</span>
                 <span>Cidade</span>
@@ -559,14 +563,35 @@ export default function DashboardApp() {
                   </div>
                 ) : (
                   filteredLeads.map((lead) => (
-                    <div key={lead.id} className="grid grid-cols-[1.2fr_1fr_1fr_0.85fr] gap-4 border-b border-white/6 px-5 py-4 text-sm text-white/85 transition hover:bg-white/[0.03]">
-                      <div>
+                    <div key={lead.id} className="border-b border-white/6 px-4 py-4 text-sm text-white/85 transition hover:bg-white/[0.03] sm:px-5 md:grid md:grid-cols-[1.2fr_1fr_1fr_0.85fr] md:gap-4">
+                      <div className="md:hidden">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-white">{lead.nome}</p>
+                            <p className="mt-1 truncate text-xs text-white/55">{lead.email || lead.whatsapp || 'Contato nao informado'}</p>
+                          </div>
+                          <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/55">
+                            {lead.curso || 'Curso'}
+                          </span>
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-3">
+                          <div className="rounded-[1rem] border border-white/8 bg-white/[0.03] px-3 py-2.5">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/40">Cidade</p>
+                            <p className="mt-1 text-sm text-white">{lead.cidade || 'Cidade nao informada'}</p>
+                          </div>
+                          <div className="rounded-[1rem] border border-white/8 bg-white/[0.03] px-3 py-2.5">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/40">Entrada</p>
+                            <p className="mt-1 text-sm text-white">{formatDateTime(lead.created_at)}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="hidden md:block">
                         <p className="font-semibold text-white">{lead.nome}</p>
                         <p className="mt-1 text-xs text-white/55">{lead.email || lead.whatsapp || 'Contato nao informado'}</p>
                       </div>
-                      <div>{lead.curso || 'Curso nao informado'}</div>
-                      <div>{lead.cidade || 'Cidade nao informada'}</div>
-                      <div>{formatDateTime(lead.created_at)}</div>
+                      <div className="hidden md:block">{lead.curso || 'Curso nao informado'}</div>
+                      <div className="hidden md:block">{lead.cidade || 'Cidade nao informada'}</div>
+                      <div className="hidden md:block">{formatDateTime(lead.created_at)}</div>
                     </div>
                   ))
                 )}
