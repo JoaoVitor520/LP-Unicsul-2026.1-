@@ -744,7 +744,6 @@ export default function App() {
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
-      const t = course.title.toLowerCase();
       const matchesSearch = fuzzyMatch(searchQuery, course.title, course.area);
       const matchesArea = activeArea === 'Todas' || course.area === activeArea;
       return matchesSearch && matchesArea;
@@ -755,10 +754,7 @@ export default function App() {
   const searchSuggestions = useMemo(() => {
     if (!searchQuery.trim() || searchQuery.length < 2) return [];
     return courses
-      .filter(c => {
-        const t = c.title.toLowerCase();
-        return fuzzyMatch(searchQuery, c.title, c.area);
-      })
+      .filter(c => fuzzyMatch(searchQuery, c.title, c.area))
       .slice(0, 6);
   }, [courses, searchQuery, fuzzyMatch]);
 
@@ -946,8 +942,8 @@ export default function App() {
               {/* Stats strip */}
               <div className="flex gap-5 shrink-0">
                 {[
-                  { value: '152', label: 'Cursos' },
-                  { value: '8', label: 'Áreas' },
+                  { value: String(courses.length), label: 'Cursos' },
+                  { value: String(new Set(courses.map(c => c.area)).size), label: 'Áreas' },
                   { value: '85%', label: 'Bolsa máx.' },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center bg-[#111a3e] border border-white/[0.07] rounded-2xl px-5 py-3">
@@ -961,20 +957,36 @@ export default function App() {
 
           {/* Area Filter Tabs */}
           <div className="mb-10 overflow-x-auto scrollbar-hide -mx-6 px-6">
-            <div className="flex gap-2 pb-1 min-w-max">
-              {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort()].map(area => (
-                <button
-                  key={area as string}
-                  onClick={() => { setActiveArea(area as string); setVisibleCount(8); }}
-                  className={`px-5 py-2.5 rounded-2xl font-bold text-xs whitespace-nowrap transition-all duration-200 border ${
-                    activeArea === area
-                      ? 'bg-gradient-to-r from-[#b8c3ff] to-[#a0b4ff] border-transparent text-[#070f2e] shadow-[0_4px_16px_rgba(184,195,255,0.25)]'
-                      : 'bg-[#0c1530]/60 border-white/[0.06] text-[#6b7fc0] hover:bg-[#141f45] hover:text-[#aebef0] hover:border-white/10'
-                  }`}
-                >
-                  {area as string}
-                </button>
-              ))}
+            <div className="flex gap-2.5 pb-1 min-w-max">
+              {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort()].map(area => {
+                const isActive = activeArea === area;
+                const count = area === 'Todas' ? courses.length : courses.filter(c => c.area === area).length;
+                return (
+                  <button
+                    key={area as string}
+                    onClick={() => { setActiveArea(area as string); setVisibleCount(8); }}
+                    className={`group relative px-5 py-2.5 rounded-2xl font-bold text-xs whitespace-nowrap transition-all duration-300 ease-out border ${
+                      isActive
+                        ? 'bg-gradient-to-r from-[#b8c3ff] to-[#a0b4ff] border-transparent text-[#070f2e] shadow-[0_4px_20px_rgba(184,195,255,0.3)] scale-[1.03]'
+                        : 'bg-[#0c1530]/60 border-white/[0.06] text-[#6b7fc0] hover:bg-[#141f45] hover:text-[#aebef0] hover:border-white/[0.12] hover:shadow-[0_2px_12px_rgba(107,127,192,0.15)] hover:scale-[1.02] active:scale-[0.98]'
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent pointer-events-none" />
+                    )}
+                    <span className="relative flex items-center gap-2">
+                      {area as string}
+                      <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-black transition-all duration-300 ${
+                        isActive
+                          ? 'bg-[#070f2e]/20 text-[#070f2e]'
+                          : 'bg-white/[0.06] text-[#4a5a8a] group-hover:bg-white/[0.1] group-hover:text-[#8a9fd0]'
+                      }`}>
+                        {count}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
