@@ -634,7 +634,7 @@ export default function App() {
               { icon: Clock, title: 'Flexibilidade Total', desc: 'Estude no seu ritmo, onde e quando quiser com a melhor plataforma EAD.', color: 'text-primary', bg: 'bg-primary/10' },
               { icon: Award, title: 'Qualidade MEC', desc: 'Cursos com nota máxima no MEC e diplomas valorizados em todo o país.', color: 'text-tertiary', bg: 'bg-tertiary/10' },
               { icon: Smartphone, title: 'Plataforma Blackboard', desc: 'A mesma utilizada por Harvard e pelas melhores do mundo. Tecnologia de ponta.', color: 'text-aqua', bg: 'bg-aqua/10' },
-              { icon: Users, title: 'Acompanhamento Próximo', desc: 'Acompanhamento após a matrícula até a formação, desde o acesso até o auxílio e documentação de estágio.', color: 'text-secondary', bg: 'bg-secondary/10' },
+              { icon: Users, title: 'Acompanhamento Próximo', desc: 'Acompanhamento da matrícula até a formação, desde o acesso até o auxílio e documentação de estágio.', color: 'text-secondary', bg: 'bg-secondary/10' },
               { icon: GraduationCap, title: 'Corpo Docente de Elite', desc: 'Aulas ministradas por mestres e doutores com vasta experiência no mercado.', color: 'text-primary', bg: 'bg-primary/10' },
               { icon: Briefcase, title: 'Tutores Especializados', desc: 'Tutores especializados em cada polo para tirar suas dúvidas e apoiar sua jornada.', color: 'text-tertiary', bg: 'bg-tertiary/10' },
             ].map((benefit, i) => (
