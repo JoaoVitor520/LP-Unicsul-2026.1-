@@ -956,8 +956,8 @@ export default function App() {
           </div>
 
           {/* Area Filter Tabs */}
-          <div className="mb-10 overflow-x-auto scrollbar-hide -mx-6 px-6">
-            <div className="flex gap-2.5 pb-1 min-w-max pr-6">
+          <div className="mb-10 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-2.5 pb-1 w-max px-6">
               {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort()].map(area => {
                 const isActive = activeArea === area;
                 const count = area === 'Todas' ? courses.length : courses.filter(c => c.area === area).length;
