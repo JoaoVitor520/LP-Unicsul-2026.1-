@@ -949,7 +949,7 @@ export default function App() {
 
     setFormStatus('error');
     if (insertErrors.some(message => message.includes("'cidade' column"))) {
-      setFormError('A coluna cidade ainda nao existe no Supabase. Execute o SQL de sql/add_cidade_leads.sql e tente novamente.');
+      setFormError('A coluna cidade ainda nao existe no Supabase. Execute o SQL de sql/setup_leads_form_city.sql e tente novamente.');
       console.error('Supabase schema is missing the cidade column:', insertErrors);
       return;
     }
