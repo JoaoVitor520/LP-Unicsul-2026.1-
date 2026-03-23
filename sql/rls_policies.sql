@@ -6,6 +6,7 @@
 
 -- 1. Adicionar coluna sobrenome na tabela leads
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS sobrenome TEXT;
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS cidade TEXT;
 
 -- 2. Garantir coluna created_at com default e not null
 ALTER TABLE public.leads

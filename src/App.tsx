@@ -736,7 +736,7 @@ export default function App() {
   const [showFriendForm, setShowFriendForm] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState({ name: '', lastName: '', email: '', phone: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
+  const [formData, setFormData] = useState({ name: '', lastName: '', email: '', phone: '', city: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
 
   // Fetch Supabase Data
   useEffect(() => {
@@ -879,6 +879,7 @@ export default function App() {
     const normalizedTable = tableName.trim() || 'leads';
     const hasReferral = showFriendForm && Boolean(formData.friendName.trim());
     const fullName = [formData.name.trim(), formData.lastName.trim()].filter(Boolean).join(' ');
+    const city = formData.city.trim();
 
     if (normalizedTable === 'pistas') {
       return [{
@@ -888,7 +889,8 @@ export default function App() {
           'e-mail': formData.email.trim(),
           WhatsApp: formData.phone,
           curso: formData.course,
-          'indicação': hasReferral ? 'sim' : 'nao',
+          ['indica\u00e7\u00e3o']: hasReferral ? 'sim' : 'nao',
+          cidade: city,
         },
       }];
     }
@@ -907,6 +909,7 @@ export default function App() {
       payload: {
         nome: fullName || formData.name.trim(),
         ...leadBasePayload,
+        cidade: city,
       },
     }];
   };
@@ -945,6 +948,11 @@ export default function App() {
     }
 
     setFormStatus('error');
+    if (insertErrors.some(message => message.includes("'cidade' column"))) {
+      setFormError('A coluna cidade ainda nao existe no Supabase. Execute o SQL de sql/add_cidade_leads.sql e tente novamente.');
+      console.error('Supabase schema is missing the cidade column:', insertErrors);
+      return;
+    }
     setFormError('Não foi possível gravar sua inscrição no banco. Verifique a tabela configurada, os nomes das colunas e as políticas de INSERT no Supabase.');
     console.error('All Supabase insert attempts failed:', insertErrors);
   };
@@ -1416,31 +1424,46 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="space-y-2 pb-2">
-                      <label htmlFor="studentCourse" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Curso de interesse</label>
-                      <div className="relative">
-                        <select
-                          id="studentCourse"
-                          name="studentCourse"
+                    <div className="grid grid-cols-1 md:grid-cols-[0.85fr_1.15fr] gap-6 pb-2">
+                      <div className="space-y-2">
+                        <label htmlFor="studentCity" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Cidade</label>
+                        <input
+                          id="studentCity"
+                          name="studentCity"
+                          autoComplete="address-level2"
                           required
-                          value={formData.course}
-                          onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                          className={`w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all outline-none appearance-none cursor-pointer shadow-inner ${formData.course ? 'text-[#c7d5fa]' : 'text-[#425492]'}`}
-                        >
-                          <option className="bg-[#121c43] text-white/50" value="" disabled>Escolha seu curso...</option>
+                          value={formData.city}
+                          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                          className="w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all text-[#c7d5fa] placeholder:text-[#425492] outline-none shadow-inner"
+                          placeholder="Sua cidade"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="studentCourse" className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#869bea] ml-1">Curso de interesse</label>
+                        <div className="relative">
+                          <select
+                            id="studentCourse"
+                            name="studentCourse"
+                            required
+                            value={formData.course}
+                            onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+                            className={`w-full bg-[#18234e] border border-white/10 rounded-2xl py-4 flex-1 px-5 focus:ring-2 focus:ring-[#849bf2] focus:border-transparent transition-all outline-none appearance-none cursor-pointer shadow-inner ${formData.course ? 'text-[#c7d5fa]' : 'text-[#425492]'}`}
+                          >
+                            <option className="bg-[#121c43] text-white/50" value="" disabled>Escolha seu curso...</option>
 
-                          {/* Renderiza dinamicamente os cursos agrupados por Área */}
-                          {areaOptions.map(area => (
-                            <optgroup key={`area_${area}`} className="bg-[#121c43] text-[#aebef0]" label={`── ${area} ──`}>
-                              {courses.filter(c => c.area === area).sort((a, b) => a.title.localeCompare(b.title)).map(course => (
-                                <option key={`course_${course.id}_${course.modality}`} value={course.title}>
-                                  {course.title} ({course.modality})
-                                </option>
-                              ))}
-                            </optgroup>
-                          ))}
-                        </select>
-                        <ChevronDown size={20} className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#869bea]" />
+                            {/* Renderiza dinamicamente os cursos agrupados por Área */}
+                            {areaOptions.map(area => (
+                              <optgroup key={`area_${area}`} className="bg-[#121c43] text-[#aebef0]" label={`── ${area} ──`}>
+                                {courses.filter(c => c.area === area).sort((a, b) => a.title.localeCompare(b.title)).map(course => (
+                                  <option key={`course_${course.id}_${course.modality}`} value={course.title}>
+                                    {course.title} ({course.modality})
+                                  </option>
+                                ))}
+                              </optgroup>
+                            ))}
+                          </select>
+                          <ChevronDown size={20} className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#869bea]" />
+                        </div>
                       </div>
                     </div>
 
