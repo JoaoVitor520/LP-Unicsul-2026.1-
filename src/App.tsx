@@ -838,6 +838,35 @@ export default function App() {
     });
   }, [courses, searchQuery, activeArea, fuzzyMatch]);
 
+  const areaOptions = useMemo(() => {
+    const priorityOrder = [
+      'Tecnologia',
+      'Gestão e Negócios',
+      'Saúde',
+      'Educação',
+      'Engenharias',
+      'Comunicação',
+      'Ciências Sociais',
+      'Design',
+      'Agrárias',
+      'Gastronomia e Hospitalidade',
+    ];
+
+    return Array.from(new Set(courses.map(c => c.area).filter(Boolean) as string[]))
+      .sort((a, b) => {
+        const indexA = priorityOrder.indexOf(a);
+        const indexB = priorityOrder.indexOf(b);
+
+        if (indexA !== -1 || indexB !== -1) {
+          if (indexA === -1) return 1;
+          if (indexB === -1) return -1;
+          return indexA - indexB;
+        }
+
+        return a.localeCompare(b, 'pt-BR');
+      });
+  }, [courses]);
+
   // Sugestões rápidas enquanto o usuário digita (máx 6)
   const searchSuggestions = useMemo(() => {
     if (!searchQuery.trim() || searchQuery.length < 2) return [];
@@ -873,23 +902,13 @@ export default function App() {
       amigo_whatsapp: formData.friendPhone || null,
     };
 
-    return [
-      {
-        table: normalizedTable,
-        payload: {
-          nome: formData.name.trim(),
-          sobrenome: formData.lastName.trim() || null,
-          ...leadBasePayload,
-        },
+    return [{
+      table: normalizedTable,
+      payload: {
+        nome: fullName || formData.name.trim(),
+        ...leadBasePayload,
       },
-      {
-        table: normalizedTable,
-        payload: {
-          nome: fullName || formData.name.trim(),
-          ...leadBasePayload,
-        },
-      },
-    ];
+    }];
   };
 
   const getInsertTargets = () => {
@@ -922,7 +941,6 @@ export default function App() {
         return;
       }
 
-      console.error(`Supabase insert failed for table "${target.table}":`, error);
       insertErrors.push(`${target.table}: ${error.message}`);
     }
 
@@ -1086,7 +1104,7 @@ export default function App() {
               <div className="flex gap-5 shrink-0">
                 {[
                   { value: String(courses.length), label: 'Cursos' },
-                  { value: String(new Set(courses.map(c => c.area)).size), label: 'Áreas' },
+                  { value: String(areaOptions.length), label: 'Áreas' },
                   { value: '85%', label: 'Bolsa máx.' },
                 ].map((stat) => (
                   <div key={stat.label} className="text-center bg-[#111a3e] border border-white/[0.07] rounded-2xl px-5 py-3">
@@ -1099,9 +1117,9 @@ export default function App() {
           </div>
 
           {/* Area Filter Tabs */}
-          <div className="mb-10 overflow-x-auto scrollbar-hide">
-            <div className="flex gap-2.5 pb-1 w-max px-6">
-              {['Todas', ...Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort()].map(area => {
+          <div className="mb-10 -mx-6 overflow-x-auto px-6 scrollbar-hide md:mx-0 md:overflow-visible md:px-0">
+            <div className="flex w-max gap-2.5 pb-1 md:w-full md:flex-wrap md:gap-3">
+              {['Todas', ...areaOptions].map(area => {
                 const isActive = activeArea === area;
                 const count = area === 'Todas' ? courses.length : courses.filter(c => c.area === area).length;
                 return (
@@ -1412,7 +1430,7 @@ export default function App() {
                           <option className="bg-[#121c43] text-white/50" value="" disabled>Escolha seu curso...</option>
 
                           {/* Renderiza dinamicamente os cursos agrupados por Área */}
-                          {Array.from(new Set(courses.map(c => c.area))).filter(Boolean).sort().map(area => (
+                          {areaOptions.map(area => (
                             <optgroup key={`area_${area}`} className="bg-[#121c43] text-[#aebef0]" label={`── ${area} ──`}>
                               {courses.filter(c => c.area === area).sort((a, b) => a.title.localeCompare(b.title)).map(course => (
                                 <option key={`course_${course.id}_${course.modality}`} value={course.title}>
