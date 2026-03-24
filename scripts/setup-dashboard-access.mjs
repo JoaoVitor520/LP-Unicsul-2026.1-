@@ -238,7 +238,11 @@ const main = async () => {
     throw new Error('Missing required env var: VITE_SUPABASE_ANON_KEY');
   }
 
-  if (!managementToken || !serviceRoleKey) {
+  if (!anonKey) {
+    throw new Error('Missing required env var: VITE_SUPABASE_ANON_KEY');
+  }
+
+  if (!serviceRoleKey) {
     if (!configuredManagerEmail) {
       throw new Error('Missing required env var: DASHBOARD_MANAGER_EMAIL');
     }
@@ -258,8 +262,12 @@ const main = async () => {
     await validateDashboardAccess(supabaseUrl, anonKey, configuredManagerEmail, managerPassword);
 
     console.log('Dashboard access validated successfully using local credentials.');
-    console.log('Admin bootstrap was skipped because SUPABASE_MANAGEMENT_TOKEN and/or SUPABASE_SERVICE_ROLE_KEY are not set.');
+    console.log('Admin bootstrap was skipped because SUPABASE_SERVICE_ROLE_KEY is not set.');
     return;
+  }
+
+  if (!configuredManagerEmail && !managementToken) {
+    throw new Error('Missing required env var: DASHBOARD_MANAGER_EMAIL');
   }
 
   const finalManagerPassword = managerPassword || generatePassword();
@@ -277,7 +285,11 @@ const main = async () => {
     throw new Error('Supabase did not return a dashboard user id.');
   }
 
-  await applyDashboardSql(projectRef, managementToken, managerEmail, user.id);
+  if (managementToken) {
+    await applyDashboardSql(projectRef, managementToken, managerEmail, user.id);
+  } else {
+    console.log('SQL bootstrap skipped because SUPABASE_MANAGEMENT_TOKEN is not set.');
+  }
 
   writeLocalEnv({
     SUPABASE_PROJECT_REF: projectRef,
