@@ -28,7 +28,7 @@ type Lead = {
   created_at: string;
 };
 
-type AuthView = 'checking' | 'login' | 'authorizing' | 'ready' | 'forbidden';
+type AuthView = 'checking' | 'login' | 'authorizing' | 'reset' | 'ready' | 'forbidden';
 type RangeFilter = '24h' | '7d' | '30d' | 'all';
 
 const LIVE_REFRESH_MS = 20000;
@@ -117,6 +117,8 @@ export default function DashboardApp() {
     email: DASHBOARD_LOGIN_EMAIL,
     password: '',
   });
+  const [resetForm, setResetForm] = useState({ password: '', confirm: '' });
+  const [resetLoading, setResetLoading] = useState(false);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [range, setRange] = useState<RangeFilter>('7d');
   const [course, setCourse] = useState('Todas');
@@ -128,7 +130,7 @@ export default function DashboardApp() {
   const [readBlocked, setReadBlocked] = useState(false);
   const deferredSearch = useDeferredValue(search);
 
-  const verifyAccess = useCallback((nextSession: Session) => {
+  const assertAuthorized = useCallback((nextSession: Session) => {
     if (!DASHBOARD_MANAGER_EMAIL && !DASHBOARD_MANAGER_UID) {
       throw new Error('Dashboard nao configurado. Defina VITE_DASHBOARD_MANAGER_EMAIL e/ou VITE_DASHBOARD_MANAGER_UID.');
     }
@@ -146,10 +148,14 @@ export default function DashboardApp() {
     if (!allowedByEmail && !allowedByUid) {
       throw new Error('Seu e-mail nao esta liberado para este dashboard.');
     }
+  }, []);
+
+  const verifyAccess = useCallback((nextSession: Session) => {
+    assertAuthorized(nextSession);
 
     setAuthView('ready');
     setAuthError('');
-  }, []);
+  }, [assertAuthorized]);
 
   const fetchLeads = useCallback(async (silent = false) => {
     if (!silent) setIsLoading(true);
@@ -193,10 +199,22 @@ export default function DashboardApp() {
       }
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
       if (!nextSession) {
         setAuthError('');
         return setAuthView('login');
+      }
+
+      if (event === 'PASSWORD_RECOVERY') {
+        try {
+          assertAuthorized(nextSession);
+          setAuthError('');
+          setAuthView('reset');
+        } catch (error) {
+          setAuthError(error instanceof Error ? error.message : 'Falha ao validar acesso.');
+          setAuthView('forbidden');
+        }
+        return;
       }
 
       setAuthView('authorizing');
@@ -356,6 +374,35 @@ export default function DashboardApp() {
     }
   };
 
+  const handlePasswordReset = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setAuthError('');
+
+    if (!resetForm.password || resetForm.password.length < 8) {
+      setAuthError('A senha deve ter pelo menos 8 caracteres.');
+      return;
+    }
+
+    if (resetForm.password !== resetForm.confirm) {
+      setAuthError('As senhas nao conferem.');
+      return;
+    }
+
+    setResetLoading(true);
+    const { error } = await supabase.auth.updateUser({ password: resetForm.password });
+    setResetLoading(false);
+
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+
+    await supabase.auth.signOut();
+    setResetForm({ password: '', confirm: '' });
+    setAuthError('Senha atualizada. Faca login novamente.');
+    setAuthView('login');
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setLeads([]);
@@ -428,6 +475,70 @@ export default function DashboardApp() {
                   className="inline-flex w-full items-center justify-center gap-2 rounded-[1.1rem] bg-[#d8f85f] px-5 py-3.5 font-bold text-[#08152f] transition hover:brightness-105"
                 >
                   Entrar no dashboard
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  if (authView === 'reset') {
+    return (
+      <div className="dashboard-shell min-h-screen px-6 py-8">
+        <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-xl items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="dashboard-panel w-full overflow-hidden rounded-[2rem] border border-white/10"
+          >
+            <div className="px-8 py-10 md:px-10 md:py-12">
+              <div className="mx-auto max-w-md text-center">
+                <img src="/logo.png" alt="Cruzeiro do Sul Virtual" className="mx-auto h-14 w-auto opacity-95" />
+                <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-[#91ffe4]">
+                  <ShieldCheck className="h-4 w-4" />
+                  Atualizar senha
+                </div>
+                <h2 className="mt-6 font-headline text-3xl font-extrabold text-white md:text-4xl">Defina sua nova senha</h2>
+                <p className="mt-3 text-sm text-[#9fb1dd]">Use uma senha forte e exclusiva.</p>
+              </div>
+
+              <form className="mx-auto mt-10 max-w-md space-y-5" onSubmit={handlePasswordReset}>
+                <label htmlFor="dashboard-reset-password" className="block space-y-2">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8eb6ff]">Nova senha</span>
+                  <input
+                    id="dashboard-reset-password"
+                    name="password"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={resetForm.password}
+                    onChange={(event) => setResetForm((current) => ({ ...current, password: event.target.value }))}
+                    className="w-full rounded-[1.1rem] border border-white/10 bg-[#08173d] px-4 py-3.5 text-white outline-none transition focus:border-[#31f7c5]/45 focus:ring-2 focus:ring-[#31f7c5]/15"
+                  />
+                </label>
+                <label htmlFor="dashboard-reset-confirm" className="block space-y-2">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8eb6ff]">Confirmar senha</span>
+                  <input
+                    id="dashboard-reset-confirm"
+                    name="confirm"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={resetForm.confirm}
+                    onChange={(event) => setResetForm((current) => ({ ...current, confirm: event.target.value }))}
+                    className="w-full rounded-[1.1rem] border border-white/10 bg-[#08173d] px-4 py-3.5 text-white outline-none transition focus:border-[#31f7c5]/45 focus:ring-2 focus:ring-[#31f7c5]/15"
+                  />
+                </label>
+                {authError && <div className="rounded-[1rem] border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">{authError}</div>}
+                <button
+                  type="submit"
+                  disabled={resetLoading}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-[1.1rem] bg-[#d8f85f] px-5 py-3.5 font-bold text-[#08152f] transition hover:brightness-105 disabled:opacity-60"
+                >
+                  {resetLoading ? 'Atualizando...' : 'Atualizar senha'}
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </form>

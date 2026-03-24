@@ -738,6 +738,16 @@ export default function App() {
 
   const [formData, setFormData] = useState({ name: '', lastName: '', email: '', phone: '', city: '', course: '', friendName: '', friendPhone: '', friendCourse: '' });
 
+  useEffect(() => {
+    const { hash, pathname, search, origin } = window.location;
+
+    if (!hash || !hash.includes('type=recovery')) return;
+    if (pathname.startsWith('/gestao')) return;
+
+    const target = `${origin}/gestao/${search}${hash}`;
+    window.location.replace(target);
+  }, []);
+
   // Fetch Supabase Data
   useEffect(() => {
     const fetchCoursesFromSupabase = async () => {
