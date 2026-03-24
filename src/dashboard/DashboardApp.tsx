@@ -5,6 +5,7 @@ import {
   AlertCircle,
   ArrowRight,
   Calendar,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   MapPin,
@@ -118,8 +119,15 @@ export default function DashboardApp() {
     email: DASHBOARD_LOGIN_EMAIL,
     password: '',
   });
+  const [resetRequestStatus, setResetRequestStatus] = useState('');
+  const [resetRequestLoading, setResetRequestLoading] = useState(false);
   const [resetForm, setResetForm] = useState({ password: '', confirm: '' });
   const [resetLoading, setResetLoading] = useState(false);
+  const [changeForm, setChangeForm] = useState({ password: '', confirm: '' });
+  const [changeError, setChangeError] = useState('');
+  const [changeSuccess, setChangeSuccess] = useState('');
+  const [changeLoading, setChangeLoading] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [range, setRange] = useState<RangeFilter>('7d');
   const [course, setCourse] = useState('Todas');
@@ -369,6 +377,7 @@ export default function DashboardApp() {
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setAuthError('');
+    setResetRequestStatus('');
     setAuthView('authorizing');
 
     const { error } = await supabase.auth.signInWithPassword(loginForm);
@@ -377,6 +386,28 @@ export default function DashboardApp() {
       setAuthError(error.message);
       setAuthView('login');
     }
+  };
+
+  const handlePasswordResetRequest = async () => {
+    const email = loginForm.email.trim();
+    setResetRequestStatus('');
+
+    if (!email) {
+      setResetRequestStatus('Informe o e-mail para enviar o link de recuperacao.');
+      return;
+    }
+
+    setResetRequestLoading(true);
+    const redirectTo = `${window.location.origin}/gestao/`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    setResetRequestLoading(false);
+
+    if (error) {
+      setResetRequestStatus(error.message);
+      return;
+    }
+
+    setResetRequestStatus('Se o e-mail estiver cadastrado, enviamos um link para definir a nova senha.');
   };
 
   const handlePasswordReset = async (event: React.FormEvent) => {
@@ -408,10 +439,46 @@ export default function DashboardApp() {
     setAuthView('login');
   };
 
+  const handleOpenChangePassword = () => {
+    setChangeForm({ password: '', confirm: '' });
+    setChangeError('');
+    setChangeSuccess('');
+    setShowChangePassword(true);
+  };
+
+  const handleChangePassword = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setChangeError('');
+    setChangeSuccess('');
+
+    if (!changeForm.password || changeForm.password.length < 8) {
+      setChangeError('A senha deve ter pelo menos 8 caracteres.');
+      return;
+    }
+
+    if (changeForm.password !== changeForm.confirm) {
+      setChangeError('As senhas nao conferem.');
+      return;
+    }
+
+    setChangeLoading(true);
+    const { error } = await supabase.auth.updateUser({ password: changeForm.password });
+    setChangeLoading(false);
+
+    if (error) {
+      setChangeError(error.message);
+      return;
+    }
+
+    setChangeSuccess('Senha atualizada com sucesso.');
+    setChangeForm({ password: '', confirm: '' });
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setLeads([]);
     setReadBlocked(false);
+    setShowChangePassword(false);
     setAuthView('login');
   };
 
@@ -457,7 +524,10 @@ export default function DashboardApp() {
                     required
                     autoComplete="email"
                     value={loginForm.email}
-                    onChange={(event) => setLoginForm((current) => ({ ...current, email: event.target.value }))}
+                    onChange={(event) => {
+                      setLoginForm((current) => ({ ...current, email: event.target.value }));
+                      setResetRequestStatus('');
+                    }}
                     className="w-full rounded-[1.1rem] border border-white/10 bg-[#08173d] px-4 py-3.5 text-white outline-none transition focus:border-[#31f7c5]/45 focus:ring-2 focus:ring-[#31f7c5]/15"
                   />
                 </label>
@@ -482,6 +552,20 @@ export default function DashboardApp() {
                   Entrar no dashboard
                   <ArrowRight className="h-4 w-4" />
                 </button>
+                <div className="rounded-[1rem] border border-white/10 bg-white/5 px-4 py-3 text-xs text-[#a8b6df]">
+                  Precisa cadastrar uma nova senha? Enviamos um link para redefinir quando voce informar o e-mail acima.
+                </div>
+                <button
+                  type="button"
+                  onClick={handlePasswordResetRequest}
+                  disabled={resetRequestLoading}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-[1.1rem] border border-white/10 bg-white/6 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/10 disabled:opacity-60"
+                >
+                  {resetRequestLoading ? 'Enviando link...' : 'Enviar link de nova senha'}
+                </button>
+                {resetRequestStatus && (
+                  <div className="rounded-[1rem] border border-white/10 bg-white/5 px-4 py-3 text-xs text-[#a8b6df]">{resetRequestStatus}</div>
+                )}
               </form>
             </div>
           </motion.div>
@@ -575,6 +659,81 @@ export default function DashboardApp() {
 
   return (
     <div className="dashboard-shell min-h-screen px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+      {showChangePassword && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050b1b]/80 px-4 py-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="dashboard-panel w-full max-w-md rounded-[2rem] border border-white/10 p-6 sm:p-8"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-[#91ffe4]">
+                  <KeyRound className="h-4 w-4" />
+                  Trocar senha
+                </div>
+                <h2 className="mt-4 font-headline text-2xl font-extrabold text-white">Atualize sua senha agora</h2>
+                <p className="mt-2 text-sm text-[#9fb1dd]">Use uma senha forte e diferente das anteriores.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowChangePassword(false)}
+                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-white/70 transition hover:bg-white/10"
+              >
+                Fechar
+              </button>
+            </div>
+
+            <form className="mt-6 space-y-4" onSubmit={handleChangePassword}>
+              <label htmlFor="dashboard-change-password" className="block space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8eb6ff]">Nova senha</span>
+                <input
+                  id="dashboard-change-password"
+                  name="password"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={changeForm.password}
+                  onChange={(event) => setChangeForm((current) => ({ ...current, password: event.target.value }))}
+                  className="w-full rounded-[1.1rem] border border-white/10 bg-[#08173d] px-4 py-3.5 text-white outline-none transition focus:border-[#31f7c5]/45 focus:ring-2 focus:ring-[#31f7c5]/15"
+                />
+              </label>
+              <label htmlFor="dashboard-change-confirm" className="block space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8eb6ff]">Confirmar senha</span>
+                <input
+                  id="dashboard-change-confirm"
+                  name="confirm"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={changeForm.confirm}
+                  onChange={(event) => setChangeForm((current) => ({ ...current, confirm: event.target.value }))}
+                  className="w-full rounded-[1.1rem] border border-white/10 bg-[#08173d] px-4 py-3.5 text-white outline-none transition focus:border-[#31f7c5]/45 focus:ring-2 focus:ring-[#31f7c5]/15"
+                />
+              </label>
+              {changeError && <div className="rounded-[1rem] border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">{changeError}</div>}
+              {changeSuccess && <div className="rounded-[1rem] border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">{changeSuccess}</div>}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button
+                  type="submit"
+                  disabled={changeLoading}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[1.1rem] bg-[#d8f85f] px-5 py-3.5 font-bold text-[#08152f] transition hover:brightness-105 disabled:opacity-60"
+                >
+                  {changeLoading ? 'Salvando...' : 'Atualizar senha'}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowChangePassword(false)}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-[1.1rem] border border-white/10 bg-white/6 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
       <div className="mx-auto max-w-7xl">
         <motion.header
           initial={{ opacity: 0, y: 20 }}
@@ -605,11 +764,19 @@ export default function DashboardApp() {
               </button>
               <button
                 type="button"
+                onClick={handleOpenChangePassword}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+              >
+                <KeyRound className="h-4 w-4" />
+                Trocar senha
+              </button>
+              <button
+                type="button"
                 onClick={handleLogout}
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#08173d] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0b214d]"
               >
                 <LogOut className="h-4 w-4" />
-                Sair
+                Trocar usuario
               </button>
             </div>
           </div>
