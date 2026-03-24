@@ -32,14 +32,40 @@ type AuthView = 'checking' | 'login' | 'authorizing' | 'ready' | 'forbidden';
 type RangeFilter = '24h' | '7d' | '30d' | 'all';
 
 const LIVE_REFRESH_MS = 20000;
-const DASHBOARD_MANAGER_EMAIL = 'jvcabral520@gmail.com';
-const DASHBOARD_MANAGER_UID = '1da13605-adf5-465a-a66a-3986eb978c28';
-const DASHBOARD_MANAGERS: Record<string, string> = {
-  [DASHBOARD_MANAGER_EMAIL]: 'Joao Vitor',
-};
+const DASHBOARD_MANAGER_EMAIL = (import.meta.env.VITE_DASHBOARD_MANAGER_EMAIL || '').trim().toLowerCase();
+const DASHBOARD_MANAGER_UID = (import.meta.env.VITE_DASHBOARD_MANAGER_UID || '').trim().toLowerCase();
+const DASHBOARD_LOGIN_EMAIL = (import.meta.env.VITE_DASHBOARD_LOGIN_EMAIL || DASHBOARD_MANAGER_EMAIL || '').trim();
+const DASHBOARD_MANAGERS: Record<string, string> = DASHBOARD_MANAGER_EMAIL
+  ? {
+      [DASHBOARD_MANAGER_EMAIL]: 'Gestor',
+    }
+  : {};
+const DASHBOARD_LEAD_FIELDS = 'id, nome, email, whatsapp, cidade, curso, indicacao, created_at';
 
 const normalizeText = (value: string | null | undefined) =>
   (value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+const readDashboardLeads = async () => {
+  const rpcResult = await supabase.rpc('dashboard_list_leads');
+
+  if (!rpcResult.error) {
+    return {
+      data: (rpcResult.data || []) as Lead[],
+      error: null,
+    };
+  }
+
+  const selectResult = await supabase
+    .from('leads')
+    .select(DASHBOARD_LEAD_FIELDS)
+    .order('created_at', { ascending: false })
+    .limit(250);
+
+  return {
+    data: (selectResult.data || []) as Lead[],
+    error: selectResult.error || rpcResult.error,
+  };
+};
 
 const getTopValues = (values: Array<string | null | undefined>) => {
   const counts = new Map<string, number>();
@@ -88,8 +114,8 @@ export default function DashboardApp() {
   const [authView, setAuthView] = useState<AuthView>('checking');
   const [authError, setAuthError] = useState('');
   const [loginForm, setLoginForm] = useState({
-    email: 'jvcabral520@gmail.com',
-    password: 'Cruzeiro08',
+    email: DASHBOARD_LOGIN_EMAIL,
+    password: '',
   });
   const [leads, setLeads] = useState<Lead[]>([]);
   const [range, setRange] = useState<RangeFilter>('7d');
@@ -103,6 +129,10 @@ export default function DashboardApp() {
   const deferredSearch = useDeferredValue(search);
 
   const verifyAccess = useCallback((nextSession: Session) => {
+    if (!DASHBOARD_MANAGER_EMAIL && !DASHBOARD_MANAGER_UID) {
+      throw new Error('Dashboard nao configurado. Defina VITE_DASHBOARD_MANAGER_EMAIL e/ou VITE_DASHBOARD_MANAGER_UID.');
+    }
+
     const email = nextSession.user.email?.trim().toLowerCase();
     const userId = nextSession.user.id?.trim().toLowerCase();
 
@@ -111,7 +141,7 @@ export default function DashboardApp() {
     }
 
     const allowedByEmail = email ? DASHBOARD_MANAGERS[email] : '';
-    const allowedByUid = userId === DASHBOARD_MANAGER_UID;
+    const allowedByUid = !!DASHBOARD_MANAGER_UID && userId === DASHBOARD_MANAGER_UID;
 
     if (!allowedByEmail && !allowedByUid) {
       throw new Error('Seu e-mail nao esta liberado para este dashboard.');
@@ -125,11 +155,7 @@ export default function DashboardApp() {
     if (!silent) setIsLoading(true);
     setDataError('');
 
-    const { data, error } = await supabase
-      .from('leads')
-      .select('id, nome, email, whatsapp, cidade, curso, indicacao, created_at')
-      .order('created_at', { ascending: false })
-      .limit(250);
+    const { data, error } = await readDashboardLeads();
 
     if (error) {
       const message = `${error.code || ''} ${error.message}`.toLowerCase();
