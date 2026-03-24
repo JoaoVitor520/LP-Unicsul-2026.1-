@@ -35,6 +35,7 @@ const LIVE_REFRESH_MS = 20000;
 const DASHBOARD_MANAGER_EMAIL = (import.meta.env.VITE_DASHBOARD_MANAGER_EMAIL || '').trim().toLowerCase();
 const DASHBOARD_MANAGER_UID = (import.meta.env.VITE_DASHBOARD_MANAGER_UID || '').trim().toLowerCase();
 const DASHBOARD_LOGIN_EMAIL = (import.meta.env.VITE_DASHBOARD_LOGIN_EMAIL || DASHBOARD_MANAGER_EMAIL || '').trim();
+const HAS_DASHBOARD_MANAGER_CONFIG = !!(DASHBOARD_MANAGER_EMAIL || DASHBOARD_MANAGER_UID);
 const DASHBOARD_MANAGERS: Record<string, string> = DASHBOARD_MANAGER_EMAIL
   ? {
       [DASHBOARD_MANAGER_EMAIL]: 'Gestor',
@@ -131,9 +132,7 @@ export default function DashboardApp() {
   const deferredSearch = useDeferredValue(search);
 
   const assertAuthorized = useCallback((nextSession: Session) => {
-    if (!DASHBOARD_MANAGER_EMAIL && !DASHBOARD_MANAGER_UID) {
-      throw new Error('Dashboard nao configurado. Defina VITE_DASHBOARD_MANAGER_EMAIL e/ou VITE_DASHBOARD_MANAGER_UID.');
-    }
+    if (!HAS_DASHBOARD_MANAGER_CONFIG) return;
 
     const email = nextSession.user.email?.trim().toLowerCase();
     const userId = nextSession.user.id?.trim().toLowerCase();
@@ -167,11 +166,17 @@ export default function DashboardApp() {
       const message = `${error.code || ''} ${error.message}`.toLowerCase();
       const blocked = message.includes('permission denied') || message.includes('42501') || message.includes('403');
       setReadBlocked(blocked);
-      setDataError(
-        blocked
-          ? 'O dashboard ainda nao tem permissao de leitura. Rode novamente o SQL atualizado de sql/setup_dashboard_manager_access.sql, saia da conta e entre de novo.'
-          : error.message,
-      );
+      if (blocked && !HAS_DASHBOARD_MANAGER_CONFIG) {
+        setAuthError('Seu e-mail nao esta liberado para este dashboard.');
+        setAuthView('forbidden');
+        setDataError('Sem permissao para leitura. Verifique se o e-mail/UID estao autorizados no Supabase.');
+      } else {
+        setDataError(
+          blocked
+            ? 'O dashboard ainda nao tem permissao de leitura. Rode novamente o SQL atualizado de sql/setup_dashboard_manager_access.sql, saia da conta e entre de novo.'
+            : error.message,
+        );
+      }
       setIsLoading(false);
       return;
     }
